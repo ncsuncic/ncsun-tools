@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLEH Database — Norwich Lived Experience Hub · NCSUN CIC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1D2D3D;--canvas:#F8F7F2;--sage:#7C8C74;--terra:#A64D3D;--mustard:#D4B464;
+  --active:#E8F5E0;--active-b:#3A7A20;
+  --awaiting:#EDF4F0;--awaiting-b:#7C8C74;
+  --unavail:#FDF0EC;--unavail-b:#A64D3D;
+  --onboard:#FFF8E8;--onboard-b:#D4B464;
+  --pilot:#E8F0FB;--pilot-b:#1a3a6b
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--canvas);color:var(--navy);min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--navy);padding:1.5rem 1.4rem 1.2rem;border-bottom:5px solid var(--mustard);position:relative;overflow:hidden}
+.hdr::before{content:'NLEH';position:absolute;right:-1rem;top:-1.5rem;font-family:'Playfair Display',serif;font-size:8rem;font-weight:900;color:rgba(255,255,255,0.03);pointer-events:none;letter-spacing:-3px}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.8rem}
+.hdr-title{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:900;color:#fff;line-height:1.1}
+.hdr-sub{font-size:0.68rem;color:var(--mustard);margin-top:0.35rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+.hdr-meta{font-size:0.58rem;color:rgba(255,255,255,0.4);margin-top:0.25rem;font-family:'DM Mono',monospace;line-height:1.5}
+.badges{display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;flex-shrink:0}
+.badge{padding:0.25rem 0.7rem;border-radius:3px;font-size:0.56rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap}
+.bm{background:var(--mustard);color:var(--navy)}.bt{background:var(--terra);color:#fff}.bs{background:var(--sage);color:#fff}.bg{background:#3A7A20;color:#fff}.bb{background:#1a3a6b;color:#fff}
+
+/* STATS */
+.stats{background:var(--navy);border-bottom:2px solid rgba(255,255,255,0.07);padding:0.75rem 1.4rem;display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center}
+.sn{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:900;color:var(--mustard);line-height:1}
+.sl{font-size:0.56rem;color:rgba(255,255,255,0.42);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-left:0.3rem}
+.sdiv{width:1px;height:1.8rem;background:rgba(255,255,255,0.1)}
+
+/* VERIFIED BAR */
+.verified-bar{background:rgba(212,180,100,0.1);border-top:1px solid var(--mustard);border-bottom:1px solid var(--mustard);padding:0.45rem 1.4rem;font-size:0.64rem;color:var(--navy);display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center;line-height:1.5}
+.verified-bar strong{color:var(--terra)}
+
+/* STATUS CARDS */
+.status-overview{background:#fff;border-bottom:2px solid var(--navy);padding:0.9rem 1.4rem}
+.so-label{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--sage);margin-bottom:0.5rem}
+.so-track{display:flex;gap:0.7rem;flex-wrap:wrap}
+.so-card{flex:1;min-width:140px;border-radius:4px;padding:0.65rem 0.85rem;border-left:4px solid}
+.sc-active{background:var(--active);border-color:var(--active-b)}
+.sc-awaiting{background:var(--awaiting);border-color:var(--awaiting-b)}
+.sc-unavail{background:var(--unavail);border-color:var(--unavail-b)}
+.sc-onboard{background:var(--onboard);border-color:var(--onboard-b)}
+.so-n{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;line-height:1}
+.sc-active .so-n{color:var(--active-b)}.sc-awaiting .so-n{color:var(--awaiting-b)}
+.sc-unavail .so-n{color:var(--unavail-b)}.sc-onboard .so-n{color:#9A7A20}
+.so-l{font-size:0.65rem;font-weight:700;margin-top:0.12rem;color:var(--navy)}
+.so-sub{font-size:0.55rem;color:#666;margin-top:0.08rem;font-style:italic;line-height:1.35}
+
+/* CONTROLS */
+.controls{background:var(--canvas);border-bottom:2px solid var(--navy);padding:0.7rem 1.4rem;display:flex;flex-direction:column;gap:0.6rem}
+.filter-row{display:flex;gap:0.35rem;flex-wrap:wrap;align-items:center}
+.filter-lbl{font-size:0.58rem;font-weight:700;text-transform:uppercase;color:var(--sage);letter-spacing:0.05em;margin-right:0.2rem}
+.fbtn{padding:0.38rem 0.65rem;border:2px solid var(--navy);background:transparent;color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:700;cursor:pointer;border-radius:3px;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s;min-height:36px;touch-action:manipulation}
+.fbtn:hover,.fbtn.on{background:var(--navy);color:#fff}
+.fbtn-g{border-color:var(--active-b);color:var(--active-b)}.fbtn-g:hover,.fbtn-g.on{background:var(--active-b);color:#fff;border-color:var(--active-b)}
+.fbtn-s{border-color:var(--sage);color:var(--sage)}.fbtn-s:hover,.fbtn-s.on{background:var(--sage);color:#fff;border-color:var(--sage)}
+.fbtn-t{border-color:var(--terra);color:var(--terra)}.fbtn-t:hover,.fbtn-t.on{background:var(--terra);color:#fff;border-color:var(--terra)}
+.fbtn-m{border-color:#9A7A20;color:#9A7A20}.fbtn-m:hover,.fbtn-m.on{background:#9A7A20;color:#fff;border-color:#9A7A20}
+.fbtn-p{border-color:#1a3a6b;color:#1a3a6b}.fbtn-p:hover,.fbtn-p.on{background:#1a3a6b;color:#fff;border-color:#1a3a6b}
+.srch{padding:0.4rem 0.7rem;border:2px solid var(--navy);background:#fff;font-family:'DM Sans',sans-serif;font-size:0.72rem;color:var(--navy);border-radius:3px;width:100%;min-height:40px;outline:none}
+.srch:focus{border-color:var(--mustard)}
+
+/* GEO BAR */
+.geo-bar{background:rgba(29,45,61,0.04);border-bottom:1px solid rgba(29,45,61,0.1);padding:0.5rem 1.4rem;display:flex;gap:0.35rem;flex-wrap:wrap;align-items:center}
+.geo-lbl{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--sage);margin-right:0.25rem}
+.gpill{padding:0.28rem 0.65rem;border:1.5px solid var(--sage);background:transparent;color:var(--sage);font-family:'DM Sans',sans-serif;font-size:0.6rem;font-weight:700;cursor:pointer;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;transition:all 0.15s;min-height:32px;touch-action:manipulation}
+.gpill:hover,.gpill.on{background:var(--sage);color:#fff}
+.count-bar{font-family:'DM Mono',monospace;font-size:0.58rem;color:rgba(255,255,255,0.4);padding:0.35rem 1.4rem;background:var(--navy)}
+
+/* DESKTOP TABLE */
+.tbl-wrap{padding:0 1.4rem 1.5rem;margin-top:0.8rem}
+.tbl-box{border:2px solid var(--navy);border-radius:4px;overflow:hidden}
+.tbl-scroll{max-height:52vh;overflow-y:auto}
+.tbl-scroll::-webkit-scrollbar{width:6px}
+.tbl-scroll::-webkit-scrollbar-track{background:var(--canvas)}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--sage);border-radius:3px}
+table{width:100%;border-collapse:separate;border-spacing:0}
+thead tr{background:var(--navy);position:sticky;top:0;z-index:10}
+th{padding:0.6rem 0.75rem;text-align:left;font-family:'DM Mono',monospace;font-size:0.52rem;font-weight:500;color:var(--mustard);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.06)}
+th:last-child{border-right:none}
+td{padding:0.42rem 0.75rem;font-size:0.68rem;border-bottom:1px solid rgba(29,45,61,0.06);border-right:1px solid rgba(29,45,61,0.04);vertical-align:middle}
+td:last-child{border-right:none}
+tr.r-active{background:var(--active);border-left:3px solid var(--active-b)}
+tr.r-awaiting{background:var(--awaiting);border-left:3px solid var(--awaiting-b)}
+tr.r-unavail{background:var(--unavail);border-left:3px solid var(--unavail-b)}
+tr.r-onboard{background:var(--onboard);border-left:3px solid var(--onboard-b)}
+tr:hover td{filter:brightness(0.96)}
+tr.hidden{display:none}
+.id-cell{font-family:'DM Mono',monospace;font-size:0.6rem;font-weight:500;color:var(--sage)}
+.tag{display:inline-block;padding:0.1rem 0.4rem;border-radius:2px;font-size:0.52rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap;margin:1px}
+.t-active{background:#c8eab0;color:#2a5010}
+.t-awaiting{background:#d8ede4;color:#1a6b4a}
+.t-unavail{background:#fde0d8;color:#8B2500}
+.t-onboard{background:#fde7b0;color:#7a4f00}
+.t-pilot{background:var(--pilot);color:var(--pilot-b)}
+.t-organic{background:#eee;color:#555}
+.t-norwich{background:#e8f0fb;color:#1a3a6b}
+.t-norfolk{background:#e8f5e0;color:#2a5010}
+.t-suffolk{background:#f5e8f0;color:#6b1a4a}
+
+/* MOBILE CARDS */
+.cards-wrap{display:none;flex-direction:column;gap:0.65rem;padding:0.8rem 1.4rem 1.5rem}
+.mcard{border-radius:4px;padding:0.85rem;border-left:4px solid;border:1px solid rgba(29,45,61,0.1);border-left:4px solid}
+.mcard.r-active{background:var(--active);border-left-color:var(--active-b)}
+.mcard.r-awaiting{background:var(--awaiting);border-left-color:var(--awaiting-b)}
+.mcard.r-unavail{background:var(--unavail);border-left-color:var(--unavail-b)}
+.mcard.r-onboard{background:var(--onboard);border-left-color:var(--onboard-b)}
+.mcard.hidden{display:none}
+.mc-id{font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:600;color:var(--sage);margin-bottom:0.3rem}
+.mc-tags{display:flex;flex-wrap:wrap;gap:0.2rem;margin-bottom:0.4rem}
+.mc-issues{font-size:0.68rem;color:var(--navy);margin-bottom:0.4rem;line-height:1.5}
+.mc-issues span{display:inline-block;background:#f0f0f0;border-radius:2px;padding:1px 5px;margin:1px;font-size:0.58rem}
+.mc-meta{font-size:0.65rem;color:#555;line-height:1.6}
+.mc-meta strong{color:var(--navy);font-size:0.62rem}
+.mc-panel{margin-top:0.35rem}
+
+/* CONSENT SECTION */
+.consent-section{margin:0 1.4rem 2rem;background:#fff;border:2px solid var(--navy);border-radius:4px;overflow:hidden}
+.consent-header{background:var(--terra);padding:1rem 1.4rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:52px;touch-action:manipulation}
+.consent-header h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#fff;line-height:1.2}
+.consent-header span{font-size:0.68rem;color:rgba(255,255,255,0.8);font-weight:700;white-space:nowrap;margin-left:0.5rem}
+.consent-body{padding:1.3rem;display:none}
+.consent-body.open{display:block}
+.consent-intro{font-size:0.76rem;color:var(--navy);line-height:1.65;margin-bottom:1rem;border-left:3px solid var(--terra);padding-left:0.8rem}
+.consent-intro strong{color:var(--terra)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem}
+.form-row.full{grid-template-columns:1fr}
+.form-group label{display:block;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--navy);margin-bottom:0.25rem}
+.form-group input,.form-group select{width:100%;padding:0.5rem 0.65rem;border:2px solid rgba(29,45,61,0.2);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--navy);background:var(--canvas);outline:none;transition:border-color 0.15s;min-height:42px}
+.form-group input:focus,.form-group select:focus{border-color:var(--terra)}
+.consent-check{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:1rem;background:rgba(166,77,61,0.05);border:1px solid rgba(166,77,61,0.2);border-radius:3px;padding:0.75rem}
+.consent-check input[type=checkbox]{width:20px;height:20px;flex-shrink:0;margin-top:0.1rem;cursor:pointer;accent-color:var(--terra)}
+.consent-check label{font-size:0.72rem;color:var(--navy);line-height:1.55;cursor:pointer}
+.consent-check label strong{color:var(--terra)}
+.btn-consent{background:var(--terra);color:#fff;border:none;padding:0.65rem 1.6rem;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;border-radius:3px;cursor:pointer;transition:opacity 0.15s;min-height:46px;touch-action:manipulation;width:100%}
+.btn-consent:hover{opacity:0.85}
+.consent-success{display:none;background:var(--active);border:2px solid var(--active-b);border-radius:4px;padding:1rem 1.2rem;margin-top:0.8rem;font-size:0.76rem;color:#2a5010;line-height:1.6}
+.consent-success strong{display:block;font-size:0.85rem;margin-bottom:0.3rem}
+.download-row{margin-top:0.7rem}
+.btn-download{background:var(--active-b);color:#fff;border:none;padding:0.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;border-radius:3px;cursor:pointer;min-height:40px;touch-action:manipulation}
+
+/* FOOTER */
+.footer{background:var(--navy);color:rgba(255,255,255,0.32);text-align:center;font-size:0.58rem;padding:0.9rem 1.4rem;letter-spacing:0.04em;font-family:'DM Mono',monospace;line-height:1.7}
+.footer span{color:var(--mustard)}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hdr-title{font-size:1.25rem}
+  .badges{display:none} /* too cramped on mobile — stats bar covers it */
+  .tbl-wrap{display:none}
+  .cards-wrap{display:flex}
+  .so-card{min-width:120px}
+  .form-row{grid-template-columns:1fr}
+  .stats{gap:0.8rem;padding:0.6rem 1rem}
+}
+@media (max-width:480px){
+  .hdr{padding:1rem}
+  .hdr-title{font-size:1.1rem}
+  .controls{padding:0.65rem 1rem}
+  .geo-bar{padding:0.45rem 1rem}
+  .count-bar{padding:0.3rem 1rem}
+  .cards-wrap{padding:0.7rem 1rem 1.5rem}
+  .consent-section{margin:0 1rem 1.5rem}
+  .verified-bar{padding:0.4rem 1rem;font-size:0.6rem}
+  .status-overview{padding:0.8rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-title">Norwich Lived Experience Hub</div>
+      <div class="hdr-sub">NLEH Database · Version 1 · Built March 2026 · NCSUN CIC</div>
+      <div class="hdr-meta">Living database of consented lived experience experts available to inform funded projects · Norwich / Norfolk / Suffolk · GINE Protocol Applied</div>
+    </div>
+    <div class="badges">
+      <span class="badge bm">76 Members (Working Total)</span>
+      <span class="badge bg">18 Active — On Panel</span>
+      <span class="badge bs">38 Awaiting Project Match</span>
+      <span class="badge bt">11 Unavailable</span>
+      <span class="badge bb">9 In Onboarding</span>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div style="display:flex;align-items:baseline"><span class="sn">76</span><span class="sl">Total Members</span></div>
+  <div class="sdiv"></div>
+  <div style="display:flex;align-items:baseline"><span class="sn">18</span><span class="sl">Active — On Panel</span></div>
+  <div class="sdiv"></div>
+  <div style="display:flex;align-items:baseline"><span class="sn">38</span><span class="sl">Awaiting Match</span></div>
+  <div class="sdiv"></div>
+  <div style="display:flex;align-items:baseline"><span class="sn">11</span><span class="sl">Unavailable</span></div>
+  <div class="sdiv"></div>
+  <div style="display:flex;align-items:baseline"><span class="sn">9</span><span class="sl">In Onboarding</span></div>
+</div>
+
+<div class="verified-bar">
+  <span><strong>Last verified:</strong> 4 March 2026 · Working total 76</span>
+  <span><strong>Scope:</strong> Norwich (primary) · Norfolk (expanding) · Suffolk (early stage)</span>
+</div>
+
+<div class="status-overview">
+  <div class="so-label">Current Status Overview — Last Verified 4 March 2026</div>
+  <div class="so-track">
+    <div class="so-card sc-active">
+      <div class="so-n">18</div>
+      <div class="so-l">Active — On Panel</div>
+      <div class="so-sub">Contributing to NFYOP, Ground &amp; Connect, or Edge Fund Roots panel</div>
+    </div>
+    <div class="so-card sc-awaiting">
+      <div class="so-n">38</div>
+      <div class="so-l">Awaiting Project Match</div>
+      <div class="so-sub">Onboarded and consented · Waiting for a funded project</div>
+    </div>
+    <div class="so-card sc-unavail">
+      <div class="so-n">11</div>
+      <div class="so-l">Unavailable</div>
+      <div class="so-sub">Consented and on database · Currently unable to participate</div>
+    </div>
+    <div class="so-card sc-onboard">
+      <div class="so-n">9</div>
+      <div class="so-l">In Onboarding</div>
+      <div class="so-sub">Intake in progress · Young people, crisis state, or severe ND</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <input class="srch" type="text" id="srch" placeholder="Search ID, issue, area…">
+  <div class="filter-row">
+    <span class="filter-lbl">Status:</span>
+    <button class="fbtn on" onclick="setSt(this,'all')">All</button>
+    <button class="fbtn fbtn-g" onclick="setSt(this,'active')">Active</button>
+    <button class="fbtn fbtn-s" onclick="setSt(this,'awaiting')">Awaiting</button>
+    <button class="fbtn fbtn-t" onclick="setSt(this,'unavail')">Unavailable</button>
+    <button class="fbtn fbtn-m" onclick="setSt(this,'onboard')">Onboarding</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-lbl">Origin:</span>
+    <button class="fbtn fbtn-p" onclick="setOrigin(this,'pilot')">Pilot Cohort</button>
+    <button class="fbtn" onclick="setOrigin(this,'organic')">Organic</button>
+    <button class="fbtn on" id="allOriginBtn" onclick="setOrigin(this,'all')">All Origins</button>
+  </div>
+</div>
+
+<div class="geo-bar">
+  <span class="geo-lbl">Geography:</span>
+  <button class="gpill on" onclick="setGeo(this,'all')">All</button>
+  <button class="gpill" onclick="setGeo(this,'Norwich')">Norwich</button>
+  <button class="gpill" onclick="setGeo(this,'Norfolk')">Norfolk</button>
+  <button class="gpill" onclick="setGeo(this,'Suffolk')">Suffolk</button>
+</div>
+
+<div class="count-bar" id="countBar">Showing 76 of 76 members</div>
+
+<!-- DESKTOP TABLE -->
+<div class="tbl-wrap">
+  <div class="tbl-box">
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr>
+          <th>NLEH ID</th>
+          <th>Origin</th>
+          <th>Geography</th>
+          <th>Area / District</th>
+          <th>Socio-Economic Issues</th>
+          <th>Consent Date</th>
+          <th>Status</th>
+          <th>Panel / Notes</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE CARDS -->
+<div class="cards-wrap" id="cardsWrap"></div>
+
+<!-- CONSENT SECTION -->
+<div class="consent-section">
+  <div class="consent-header" onclick="toggleConsent()">
+    <h3>Would you like to share your lived experience?</h3>
+    <span id="consentToggleLabel">Tap to open</span>
+  </div>
+  <div class="consent-body" id="consentBody">
+    <div class="consent-intro">
+      NCSUN's Managing Director, Charli McLean, has conversations with people who have lived experience of navigating systems — housing, benefits, legal, health, family court, and more. These conversations are <strong>completely confidential</strong>. Nothing you share is passed on without a second consent check from you. Your experience could help shape how services, funders, and decision-makers understand what is really happening in our communities.
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name *</label>
+        <input type="text" id="cName" placeholder="First name is fine">
+      </div>
+      <div class="form-group">
+        <label>How would you like to be contacted? *</label>
+        <select id="cContact">
+          <option value="">— Please choose —</option>
+          <option>Phone call</option>
+          <option>WhatsApp</option>
+          <option>Email</option>
+          <option>In person</option>
+          <option>Text message</option>
+        </select>
+      </div>
+    </div>
+    <div class="consent-check">
+      <input type="checkbox" id="cConsent">
+      <label for="cConsent">I am happy for Charli McLean (NCSUN CIC) to contact me for a <strong>confidential conversation</strong> about my lived experience. I understand this is entirely voluntary, my details will not be shared with anyone else, and I can withdraw at any time.</label>
+    </div>
+    <button class="btn-consent" onclick="submitConsent()">Yes — Please Get in Touch With Me</button>
+    <div class="consent-success" id="consentSuccess">
+      <strong>Thank you — your interest has been recorded.</strong>
+      Charli will be in touch using your preferred contact method. This conversation is entirely on your terms — you can say as much or as little as you like, and you can change your mind at any time.
+      <div class="download-row">
+        <button class="btn-download" id="downloadBtn">Download your submission record</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  NCSUN CIC · CIC No: 16798972 · Norwich Lived Experience Hub · NLEH Database V1 · Built March 2026<br>
+  <span>ANONYMISED PUBLIC-FACING LOG</span> · Code Document held separately by Directors only · GINE Protocol Applied · All records consented
+</div>
+
+<script>
+const DATA = [{"id": "NLEH-001", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Digital exclusion"], "consent_date": "Mar 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-002", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Housing insecurity", "Mental health & system navigation", "Immigration & asylum"], "consent_date": "Mar 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-003", "origin": "Pilot Cohort", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Benefits & welfare system"], "consent_date": "Oct 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-004", "origin": "Pilot Cohort", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Debt & financial crisis"], "consent_date": "Jan 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-005", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Mile Cross", "issues": ["Family court & legal aid gap", "Digital exclusion", "Employment & in-work poverty"], "consent_date": "Oct 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-006", "origin": "Pilot Cohort", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Immigration & asylum"], "consent_date": "Dec 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-007", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Mancroft", "issues": ["Housing insecurity", "Substance recovery"], "consent_date": "Mar 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-008", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Eaton", "issues": ["Debt & financial crisis", "Benefits & welfare system"], "consent_date": "May 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-009", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Young person transition", "Childcare access"], "consent_date": "Feb 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-010", "origin": "Pilot Cohort", "geography": "Norfolk", "ward_area": "North Norfolk", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed"], "consent_date": "Dec 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-011", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Immigration & asylum", "Young person transition"], "consent_date": "Apr 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-012", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Wensum", "issues": ["Mental health & system navigation", "Digital exclusion"], "consent_date": "Jan 2026", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-013", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Domestic abuse & safety planning"], "consent_date": "Feb 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-014", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Eaton", "issues": ["Immigration & asylum"], "consent_date": "Oct 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-015", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Immigration & asylum", "Digital exclusion"], "consent_date": "Oct 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-016", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Wensum", "issues": ["Disability & PIP system"], "consent_date": "Nov 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-017", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Mental health & system navigation", "Employment & in-work poverty"], "consent_date": "Dec 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-018", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Housing insecurity"], "consent_date": "Sep 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-019", "origin": "Pilot Cohort", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Digital exclusion", "Domestic abuse & safety planning", "Childcare access"], "consent_date": "Sep 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-020", "origin": "Pilot Cohort", "geography": "Norfolk", "ward_area": "Norwich Fringe", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Benefits & welfare system"], "consent_date": "Jan 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": "Financial Pilot cohort"}, {"id": "NLEH-021", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Broadland", "issues": ["Digital exclusion", "Young person transition"], "consent_date": "Jul 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-022", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Family court & legal aid gap", "Disability & PIP system", "Employment & in-work poverty"], "consent_date": "Feb 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-023", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Family court & legal aid gap"], "consent_date": "Nov 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-024", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Food poverty", "Debt & financial crisis"], "consent_date": "Sep 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-025", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Lakenham", "issues": ["Housing insecurity", "Neurodivergence \u2014 undiagnosed/late diagnosed", "Family court & legal aid gap"], "consent_date": "Jun 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-026", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Norwich Fringe", "issues": ["Digital exclusion"], "consent_date": "Dec 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Young person \u2014 extended intake", "gine_cross_ref": null}, {"id": "NLEH-027", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Eaton", "issues": ["Benefits & welfare system"], "consent_date": "Sep 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-028", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Benefits & welfare system"], "consent_date": "Jan 2026", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-029", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Benefits & welfare system", "Disability & PIP system"], "consent_date": "Jun 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-030", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Wensum", "issues": ["Food poverty"], "consent_date": "Jun 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-031", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mancroft", "issues": ["Food poverty", "Digital exclusion"], "consent_date": "Oct 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-032", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "South Norfolk", "issues": ["Family court & legal aid gap"], "consent_date": "Aug 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-033", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mile Cross", "issues": ["Debt & financial crisis", "Mental health & system navigation", "Domestic abuse & safety planning"], "consent_date": "Jun 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-034", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Domestic abuse & safety planning"], "consent_date": "Jul 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-035", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mile Cross", "issues": ["Employment & in-work poverty"], "consent_date": "Jan 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-036", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mancroft", "issues": ["Housing insecurity", "Mental health & system navigation"], "consent_date": "Apr 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-037", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Young person transition"], "consent_date": "Mar 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-038", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Lakenham", "issues": ["Debt & financial crisis", "Digital exclusion", "Domestic abuse & safety planning"], "consent_date": "Mar 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-039", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Housing insecurity", "Childcare access"], "consent_date": "Jul 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-040", "origin": "Organic \u2014 Confidential Conversation", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Benefits & welfare system", "Employment & in-work poverty"], "consent_date": "Aug 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-041", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Broadland", "issues": ["Digital exclusion", "Employment & in-work poverty"], "consent_date": "Feb 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Crisis state \u2014 paced sessions", "gine_cross_ref": null}, {"id": "NLEH-042", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Mental health & system navigation"], "consent_date": "Oct 2025", "status": "Active \u2014 On Panel", "panel": "NFYOP", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-043", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Food poverty", "Neurodivergence \u2014 undiagnosed/late diagnosed"], "consent_date": "Jan 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-044", "origin": "Organic \u2014 Confidential Conversation", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Domestic abuse & safety planning"], "consent_date": "Feb 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-045", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "North Norfolk", "issues": ["Family court & legal aid gap", "Benefits & welfare system"], "consent_date": "Jan 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-046", "origin": "Organic \u2014 Confidential Conversation", "geography": "Suffolk", "ward_area": "Ipswich", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Employment & in-work poverty"], "consent_date": "May 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Young person \u2014 extended intake", "gine_cross_ref": null}, {"id": "NLEH-047", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "South Norfolk", "issues": ["Childcare access", "Employment & in-work poverty"], "consent_date": "Jan 2025", "status": "Active \u2014 On Panel", "panel": "Ground and Connect", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-048", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Lakenham", "issues": ["Debt & financial crisis", "Immigration & asylum", "Childcare access"], "consent_date": "Sep 2025", "status": "Active \u2014 On Panel", "panel": "Ground and Connect", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-049", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Housing insecurity"], "consent_date": "May 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Severe ND \u2014 WhatsApp/Teams sessions", "gine_cross_ref": null}, {"id": "NLEH-050", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Digital exclusion", "Substance recovery"], "consent_date": "Oct 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-051", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Sewell", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Young person transition"], "consent_date": "May 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Severe ND \u2014 WhatsApp/Teams sessions", "gine_cross_ref": null}, {"id": "NLEH-052", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "South Norfolk", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed"], "consent_date": "Feb 2025", "status": "Unavailable", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-053", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Mental health & system navigation"], "consent_date": "Dec 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-054", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Broadland", "issues": ["Mental health & system navigation", "Immigration & asylum", "Childcare access"], "consent_date": "Jun 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-055", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Immigration & asylum", "Employment & in-work poverty"], "consent_date": "Feb 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-056", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Sewell", "issues": ["Benefits & welfare system", "Young person transition"], "consent_date": "Aug 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-057", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Wensum", "issues": ["Digital exclusion", "Employment & in-work poverty"], "consent_date": "Aug 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-058", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "South Norfolk", "issues": ["Debt & financial crisis", "Benefits & welfare system"], "consent_date": "Aug 2025", "status": "Active \u2014 On Panel", "panel": "Ground and Connect", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-059", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Employment & in-work poverty"], "consent_date": "Apr 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Crisis state \u2014 paced sessions", "gine_cross_ref": null}, {"id": "NLEH-060", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Lakenham", "issues": ["Childcare access", "Employment & in-work poverty"], "consent_date": "Feb 2026", "status": "Active \u2014 On Panel", "panel": "Ground and Connect", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-061", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Eaton", "issues": ["Food poverty", "Family court & legal aid gap"], "consent_date": "Jul 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-062", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Broadland", "issues": ["Housing insecurity"], "consent_date": "Nov 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-063", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Thorpe Hamlet", "issues": ["Digital exclusion"], "consent_date": "Mar 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Young person \u2014 extended intake", "gine_cross_ref": null}, {"id": "NLEH-064", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Bowthorpe", "issues": ["Childcare access"], "consent_date": "Jun 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-065", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Immigration & asylum"], "consent_date": "Jan 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Crisis state \u2014 paced sessions", "gine_cross_ref": null}, {"id": "NLEH-066", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Sewell", "issues": ["Housing insecurity", "Mental health & system navigation", "Substance recovery"], "consent_date": "Mar 2025", "status": "In Onboarding", "panel": null, "onboarding_note": "Young person \u2014 extended intake", "gine_cross_ref": null}, {"id": "NLEH-067", "origin": "Organic \u2014 Confidential Conversation", "geography": "Suffolk", "ward_area": "Ipswich", "issues": ["Domestic abuse & safety planning", "Disability & PIP system"], "consent_date": "Feb 2025", "status": "Active \u2014 On Panel", "panel": "Edge Fund Roots Panel", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-068", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Larkman", "issues": ["Domestic abuse & safety planning"], "consent_date": "Sep 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-069", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norfolk", "ward_area": "Norwich Fringe", "issues": ["Neurodivergence \u2014 undiagnosed/late diagnosed", "Immigration & asylum"], "consent_date": "Feb 2025", "status": "Active \u2014 On Panel", "panel": "Edge Fund Roots Panel", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-070", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Eaton", "issues": ["Digital exclusion", "Young person transition"], "consent_date": "Nov 2025", "status": "Active \u2014 On Panel", "panel": "Edge Fund Roots Panel", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-071", "origin": "Organic \u2014 Confidential Conversation", "geography": "Suffolk", "ward_area": "Waveney", "issues": ["Domestic abuse & safety planning"], "consent_date": "Feb 2025", "status": "Active \u2014 On Panel", "panel": "Edge Fund Roots Panel", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-072", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Catton Grove", "issues": ["Domestic abuse & safety planning", "Employment & in-work poverty"], "consent_date": "Apr 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-073", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mile Cross", "issues": ["Housing insecurity", "Family court & legal aid gap", "Substance recovery"], "consent_date": "Jan 2025", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-074", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Lakenham", "issues": ["Disability & PIP system", "Childcare access", "Employment & in-work poverty"], "consent_date": "Feb 2026", "status": "Awaiting Match", "panel": null, "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-075", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Wensum", "issues": ["Housing insecurity", "Food poverty", "Young person transition"], "consent_date": "Sep 2025", "status": "Active \u2014 On Panel", "panel": "Multiple Panels", "onboarding_note": null, "gine_cross_ref": null}, {"id": "NLEH-076", "origin": "Organic \u2014 Confidential Conversation", "geography": "Norwich", "ward_area": "Mancroft", "issues": ["Domestic abuse & safety planning", "Substance recovery", "Childcare access"], "consent_date": "Feb 2026", "status": "Active \u2014 On Panel", "panel": "Multiple Panels", "onboarding_note": null, "gine_cross_ref": null}];
+
+let stFilter='all', originFilter='all', geoFilter='all', searchTerm='';
+let lastSubmission = null;
+
+function rowClass(r){
+  if(r.status==='Active \u2014 On Panel') return 'r-active';
+  if(r.status==='Awaiting Match') return 'r-awaiting';
+  if(r.status==='Unavailable') return 'r-unavail';
+  return 'r-onboard';
+}
+function statusTag(s){
+  if(s==='Active \u2014 On Panel') return '<span class="tag t-active">Active \u2014 Panel</span>';
+  if(s==='Awaiting Match') return '<span class="tag t-awaiting">Awaiting Match</span>';
+  if(s==='Unavailable') return '<span class="tag t-unavail">Unavailable</span>';
+  return '<span class="tag t-onboard">In Onboarding</span>';
+}
+function geoTag(g){
+  if(g==='Norwich') return '<span class="tag t-norwich">Norwich</span>';
+  if(g==='Norfolk') return '<span class="tag t-norfolk">Norfolk</span>';
+  return '<span class="tag t-suffolk">Suffolk</span>';
+}
+function originTag(o){
+  return o==='Pilot Cohort'
+    ? '<span class="tag t-pilot">Pilot Cohort</span>'
+    : '<span class="tag t-organic">Organic</span>';
+}
+function matches(r){
+  const q=searchTerm.toLowerCase();
+  if(q && !r.id.toLowerCase().includes(q) &&
+     !r.ward_area.toLowerCase().includes(q) &&
+     !r.issues.join(' ').toLowerCase().includes(q) &&
+     !r.geography.toLowerCase().includes(q)) return false;
+  if(geoFilter!=='all' && r.geography!==geoFilter) return false;
+  if(stFilter==='active' && r.status!=='Active \u2014 On Panel') return false;
+  if(stFilter==='awaiting' && r.status!=='Awaiting Match') return false;
+  if(stFilter==='unavail' && r.status!=='Unavailable') return false;
+  if(stFilter==='onboard' && r.status!=='In Onboarding') return false;
+  if(originFilter==='pilot' && r.origin!=='Pilot Cohort') return false;
+  if(originFilter==='organic' && r.origin!=='Organic \u2014 Confidential Conversation') return false;
+  return true;
+}
+
+function render(){
+  let shown=0;
+  // Desktop table
+  const tableHtml = DATA.map(r => {
+    const vis = matches(r);
+    if(vis) shown++;
+    const panelNote = r.panel
+      ? `<span class="tag t-active">${r.panel}</span>`
+      : r.onboarding_note
+        ? `<span class="tag t-onboard" style="font-size:0.5rem">${r.onboarding_note}</span>`
+        : '<span style="color:#ccc;font-size:0.6rem">\u2014</span>';
+    return `<tr class="${rowClass(r)}${vis?'':' hidden'}">
+      <td class="id-cell">${r.id}</td>
+      <td>${originTag(r.origin)}</td>
+      <td>${geoTag(r.geography)}</td>
+      <td style="font-size:0.66rem;font-weight:600">${r.ward_area}</td>
+      <td style="font-size:0.63rem">${r.issues.map(i=>`<span style="display:inline-block;background:#f0f0f0;border-radius:2px;padding:1px 5px;margin:1px;font-size:0.56rem">${i}</span>`).join('')}</td>
+      <td class="id-cell">${r.consent_date}</td>
+      <td>${statusTag(r.status)}</td>
+      <td>${panelNote}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbody').innerHTML = tableHtml;
+
+  // Mobile cards
+  const cardsHtml = DATA.map(r => {
+    const vis = matches(r);
+    const panelNote = r.panel
+      ? `<span class="tag t-active">${r.panel}</span>`
+      : r.onboarding_note
+        ? `<span class="tag t-onboard">${r.onboarding_note}</span>`
+        : '';
+    return `<div class="mcard ${rowClass(r)}${vis?'':' hidden'}">
+      <div class="mc-id">${r.id} &nbsp;·&nbsp; ${r.consent_date}</div>
+      <div class="mc-tags">${originTag(r.origin)} ${geoTag(r.geography)} ${statusTag(r.status)}</div>
+      <div class="mc-issues">${r.issues.map(i=>`<span>${i}</span>`).join('')}</div>
+      <div class="mc-meta"><strong>District:</strong> ${r.ward_area}</div>
+      ${panelNote ? `<div class="mc-panel">${panelNote}</div>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('cardsWrap').innerHTML = cardsHtml;
+
+  document.getElementById('countBar').textContent = `Showing ${shown} of ${DATA.length} members`;
+}
+
+function setSt(btn, val){
+  stFilter = val;
+  document.querySelectorAll('.filter-row .fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+function setOrigin(btn, val){
+  originFilter = val;
+  document.querySelectorAll('.filter-row .fbtn').forEach(b => {
+    if(b.id==='allOriginBtn' || b.getAttribute('onclick')?.includes('setOrigin')) b.classList.remove('on');
+  });
+  btn.classList.add('on');
+  render();
+}
+function setGeo(btn, val){
+  geoFilter = val;
+  document.querySelectorAll('.gpill').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+document.getElementById('srch').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+
+// CONSENT FORM
+function toggleConsent(){
+  const body = document.getElementById('consentBody');
+  const label = document.getElementById('consentToggleLabel');
+  body.classList.toggle('open');
+  label.textContent = body.classList.contains('open') ? 'Tap to close' : 'Tap to open';
+}
+
+function submitConsent(){
+  const name = document.getElementById('cName').value.trim();
+  const contact = document.getElementById('cContact').value;
+  const consented = document.getElementById('cConsent').checked;
+  if(!name){ alert('Please enter your name.'); return; }
+  if(!contact){ alert('Please choose how you would like to be contacted.'); return; }
+  if(!consented){ alert('Please tick the consent box to continue.'); return; }
+  const timestamp = new Date().toLocaleString('en-GB');
+  lastSubmission = { timestamp, name, contact };
+  document.getElementById('consentSuccess').style.display = 'block';
+  document.getElementById('downloadBtn').onclick = function(){ downloadCSV(timestamp, name, contact); };
+  document.querySelector('.btn-consent').style.display = 'none';
+  document.getElementById('cName').disabled = true;
+  document.getElementById('cContact').disabled = true;
+  document.getElementById('cConsent').disabled = true;
+}
+
+function downloadCSV(timestamp, name, contact){
+  const header = 'Timestamp,Full Name,Preferred Contact Method,Contact Detail,Assigned NLEH ID,Status,Notes';
+  const row = `"${timestamp}","${name}","${contact}","","","New",""`;
+  const blob = new Blob([header + '\n' + row], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'NLEH_Consent_' + name.replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+render();
+</script>
+</body>
+</html>
