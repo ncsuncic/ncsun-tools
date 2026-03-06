@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCSUN CIC — Digital Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #1D2D3D;
+  --canvas:  #F8F7F2;
+  --sage:    #7C8C74;
+  --terra:   #A64D3D;
+  --mustard: #D4B464;
+  --ink:     #1a2230;
+  --mid:     #5a6a7a;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--canvas);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  color: var(--navy);
+  overflow-x: hidden;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--navy);
+  padding: 0 clamp(20px, 5vw, 60px);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar-left {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.topbar-right {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--mustard);
+  letter-spacing: 0.08em;
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--navy);
+  padding: clamp(40px, 8vw, 80px) clamp(20px, 5vw, 60px) clamp(48px, 9vw, 96px);
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(to right, var(--terra), var(--mustard), var(--sage), var(--terra));
+}
+.hero-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mustard);
+  border: 1px solid rgba(212,180,100,0.35);
+  padding: 5px 12px;
+  border-radius: 2px;
+  margin-bottom: 28px;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 7vw, 72px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.05;
+  margin-bottom: 20px;
+  max-width: 680px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--mustard);
+}
+.hero-sub {
+  font-size: clamp(14px, 2vw, 16px);
+  color: rgba(255,255,255,0.55);
+  max-width: 560px;
+  line-height: 1.65;
+  font-weight: 300;
+}
+.hero-glow {
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(212,180,100,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* ── INTRO STRIP ── */
+.intro-strip {
+  background: var(--terra);
+  padding: 20px clamp(20px, 5vw, 60px);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.intro-strip p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.intro-strip strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ── MAIN GRID ── */
+.tools-section {
+  padding: clamp(40px, 6vw, 72px) clamp(20px, 5vw, 60px);
+}
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 32px;
+}
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 20px;
+}
+
+/* ── TOOL CARD ── */
+.card {
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(29,45,61,0.07);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(29,45,61,0.13);
+}
+.card:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 2px;
+}
+.card-top {
+  height: 6px;
+}
+.card-body {
+  padding: 28px 28px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.card-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 12px;
+}
+.card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+.card p {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--mid);
+  font-weight: 300;
+  flex: 1;
+}
+.card-footer {
+  padding: 16px 28px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(29,45,61,0.07);
+  margin-top: 20px;
+}
+.card-link-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terra);
+  font-weight: 500;
+}
+.card-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.card:hover .card-arrow {
+  transform: translateX(3px);
+}
+
+/* ── GINE PROTOCOL STRIP ── */
+.protocol-strip {
+  background: var(--navy);
+  margin: 0 clamp(20px, 5vw, 60px) clamp(40px, 6vw, 72px);
+  border-radius: 4px;
+  padding: 32px 36px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.protocol-strip h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mustard);
+  margin-bottom: 8px;
+}
+.protocol-strip p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  font-weight: 300;
+  max-width: 420px;
+}
+.protocol-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+}
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+.badge-terra  { color: var(--terra);  border-color: rgba(166,77,61,0.5); }
+.badge-sage   { color: var(--sage);   border-color: rgba(124,140,116,0.5); }
+.badge-mustard{ color: var(--mustard);border-color: rgba(212,180,100,0.5); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 32px clamp(20px, 5vw, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+footer p {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+}
+footer a {
+  color: var(--mustard);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* ── MOBILE NAV HINT ── */
+.mobile-hint {
+  display: none;
+  text-align: center;
+  padding: 12px 20px;
+  background: rgba(212,180,100,0.1);
+  border-bottom: 1px solid rgba(212,180,100,0.2);
+}
+.mobile-hint p {
+  font-size: 12px;
+  color: var(--terra);
+  font-weight: 500;
+}
+@media (max-width: 480px) {
+  .mobile-hint { display: block; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-tag  { animation: fadeUp 0.5s ease both; }
+.hero h1   { animation: fadeUp 0.5s 0.1s ease both; }
+.hero-sub  { animation: fadeUp 0.5s 0.2s ease both; }
+.card      { animation: fadeUp 0.4s ease both; }
+.card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.10s; }
+.card:nth-child(3) { animation-delay: 0.15s; }
+.card:nth-child(4) { animation-delay: 0.20s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <span class="topbar-left">NCSUN CIC &nbsp;·&nbsp; No. 16798972</span>
+  <span class="topbar-right">ncsun-cic.netlify.app</span>
+</div>
+
+<!-- MOBILE HINT -->
+<div class="mobile-hint">
+  <p>Tap any tool to open it. All tools work in your browser — no app needed.</p>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">Digital Tools &amp; Intelligence Suite</div>
+  <h1>Lived Experience<br><em>as Core Expertise</em></h1>
+  <p class="hero-sub">NCSUN's open intelligence tools — built from and for Norwich communities. Every tool on this page is free to use, anonymised by design, and connected to the same evidence base.</p>
+</div>
+
+<!-- INTRO STRIP -->
+<div class="intro-strip">
+  <p><strong>Share-Exchange Event · 11 March 2026 · Norwich Unity Hub</strong> &nbsp;—&nbsp; These tools are live and in use today. Scan a QR code at any station, or use the links below to explore in your own time.</p>
+</div>
+
+<!-- TOOLS -->
+<div class="tools-section">
+  <div class="section-label">Five tools &nbsp;·&nbsp; One evidence base</div>
+  <div class="tools-grid">
+
+    <!-- GINE MASTER LOG -->
+    <a class="card" href="gine_master_log_v2.html" aria-label="Open GINE Master Intelligence Log">
+      <div class="card-top" style="background:var(--navy);"></div>
+      <div class="card-body">
+        <div class="card-tag">Community Intelligence</div>
+        <h2>GINE Master Log</h2>
+        <p>423 entries across 8 Norwich districts. The live intelligence log capturing what communities know, what services exist, and where the gaps are. Every entry anonymised within 48 hours.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-text">Open tool</span>
+        <span class="card-arrow" style="background:var(--navy);">→</span>
+      </div>
+    </a>
+
+    <!-- STATION 6 GINE DATABASE -->
+    <a class="card" href="NCSUN_Station6_GINEDatabase.html" aria-label="Open Station 6 GINE Services Database">
+      <div class="card-top" style="background:var(--mustard);"></div>
+      <div class="card-body">
+        <div class="card-tag">Station 6 &nbsp;·&nbsp; Live Build</div>
+        <h2>GINE Services Database</h2>
+        <p>The collective station. Search Norwich and Norfolk services, filter by need, and add what is missing. Built live by the room — every addition strengthens the network's intelligence.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-text">Open tool</span>
+        <span class="card-arrow" style="background:var(--mustard); color:var(--navy);">→</span>
+      </div>
+    </a>
+
+    <!-- PREVENTION ENGINE -->
+    <a class="card" href="preventionengine.html" aria-label="Open NLEH Prevention Engine">
+      <div class="card-top" style="background:var(--terra);"></div>
+      <div class="card-body">
+        <div class="card-tag">Triage &amp; Navigation</div>
+        <h2>Prevention Engine</h2>
+        <p>A trauma-informed triage prototype for the Norwich Lived Experience Hub. Supports secure, pseudonymised logging of resident narratives to identify the right support, first time.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-text">Open tool</span>
+        <span class="card-arrow" style="background:var(--terra);">→</span>
+      </div>
+    </a>
+
+    <!-- NLEH DATABASE -->
+    <a class="card" href="nleh_database_v1.html" aria-label="Open NLEH Service Database">
+      <div class="card-top" style="background:var(--sage);"></div>
+      <div class="card-body">
+        <div class="card-tag">Service Directory</div>
+        <h2>NLEH Database</h2>
+        <p>The Norwich Lived Experience Hub service database. A searchable directory of local organisations, support pathways, and community resources — mapped against lived experience need.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-text">Open tool</span>
+        <span class="card-arrow" style="background:var(--sage);">→</span>
+      </div>
+    </a>
+
+    <!-- FINANCIAL LOG -->
+    <a class="card" href="gine_financial_log_v2.html" aria-label="Open GINE Financial Resilience Log">
+      <div class="card-top" style="background:var(--mustard);"></div>
+      <div class="card-body">
+        <div class="card-tag">Ethical Finance &nbsp;·&nbsp; NIOP</div>
+        <h2>Financial Resilience Log</h2>
+        <p>The NIOP pilot financial intelligence log. Tracks the financial journeys of the 300-person pilot cohort — Roadmap Velocity, Mustard Spark allocations, and agency patterns across Norwich districts.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-link-text">Open tool</span>
+        <span class="card-arrow" style="background:var(--mustard); color:var(--navy);">→</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- GINE PROTOCOL STRIP -->
+<div class="protocol-strip">
+  <div>
+    <h3>GINE Protocol</h3>
+    <p>Every tool on this page operates under the GINE anonymisation standard. No personally identifiable information is stored, processed, or transmitted. All insights are scrubbed within 48 hours of capture. You have the right to withdraw any contribution at any time.</p>
+  </div>
+  <div class="protocol-badges">
+    <span class="badge badge-terra">Anonymised by design</span>
+    <span class="badge badge-sage">Human in the loop</span>
+    <span class="badge badge-mustard">Open governance</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    NCSUN CIC &nbsp;·&nbsp; Company No. 16798972<br>
+    Asset locked to The Feed CIC &nbsp;·&nbsp; Easton, Norwich &nbsp;·&nbsp; 2026<br>
+    <a href="mailto:charli@ncsun.org">charli@ncsun.org</a> &nbsp;·&nbsp; <a href="https://www.ncsun.org">www.ncsun.org</a>
+  </p>
+  <p style="text-align:right;">
+    Lived Experience as Core Expertise<br>
+    All tools free to use &nbsp;·&nbsp; No login required<br>
+    Works on any device
+  </p>
+</footer>
+
+</body>
+</html>
