@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NCSUN · The Front Door</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #1E2A3A;
+      --gold:   #C9A84C;
+      --gold-light: #E8C96A;
+      --teal:   #5B8A8B;
+      --teal-light: #7AABAC;
+      --cream:  #F5F0E8;
+      --cream-dark: #EDE8DE;
+      --burgundy: #7D2E3E;
+      --white:  #FFFFFF;
+      --text:   #1E2A3A;
+      --muted:  #5A6A7A;
+      --radius: 16px;
+      --shadow: 0 4px 32px rgba(30,42,58,0.10);
+      --shadow-lg: 0 8px 48px rgba(30,42,58,0.16);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 20px;
+      line-height: 1.65;
+    }
+
+    /* ── Layout wrapper ── */
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding: 0 0 60px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .page.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--navy);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .topbar-logo {
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+    }
+    .topbar-name {
+      font-family: 'Lora', serif;
+      color: var(--cream);
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .topbar-name span {
+      color: var(--gold);
+    }
+
+    /* ── Card container ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 640px;
+      margin: 32px auto 0;
+      padding: 40px 36px;
+    }
+    @media (max-width: 680px) {
+      .card { margin: 16px 12px 0; padding: 28px 22px; }
+    }
+
+    /* ── Typography ── */
+    h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(26px, 5vw, 36px);
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'Lora', serif;
+      font-size: clamp(20px, 3.5vw, 26px);
+      font-weight: 500;
+      color: var(--navy);
+      margin: 28px 0 10px;
+    }
+    p {
+      font-size: clamp(18px, 2.5vw, 20px);
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .lead {
+      font-size: clamp(19px, 2.8vw, 22px);
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .small { font-size: 16px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Divider ── */
+    .rule {
+      border: none;
+      border-top: 2px solid var(--cream-dark);
+      margin: 28px 0;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 32px;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+      text-decoration: none;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--navy);
+      box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+    }
+    .btn-gold:hover { background: var(--gold-light); box-shadow: 0 6px 20px rgba(201,168,76,0.45); }
+    .btn-teal {
+      background: var(--teal);
+      color: var(--white);
+      box-shadow: 0 4px 16px rgba(91,138,139,0.35);
+    }
+    .btn-teal:hover { background: var(--teal-light); box-shadow: 0 6px 20px rgba(91,138,139,0.45); }
+    .btn-navy {
+      background: var(--navy);
+      color: var(--cream);
+      box-shadow: 0 4px 16px rgba(30,42,58,0.25);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 2px solid var(--cream-dark);
+      box-shadow: none;
+    }
+    .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+    .btn-sm {
+      padding: 12px 20px;
+      font-size: 16px;
+      width: auto;
+      margin-top: 0;
+    }
+
+    /* ── Path diagram ── */
+    .path-diagram {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0 12px;
+      margin: 20px 0 28px;
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 20px 16px;
+    }
+    .path-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .path-header {
+      font-weight: 700;
+      font-size: 15px;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 8px 8px 0 0;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .path-header.gold { background: var(--gold); color: var(--navy); }
+    .path-header.teal { background: var(--teal); color: var(--white); }
+    .path-step {
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 8px 10px;
+      border-left: 2px solid var(--cream-dark);
+      border-right: 2px solid var(--cream-dark);
+      background: var(--white);
+      text-align: center;
+      color: var(--text);
+    }
+    .path-step:last-child {
+      border-bottom: 2px solid var(--cream-dark);
+      border-radius: 0 0 8px 8px;
+    }
+    .path-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--muted);
+      padding-top: 8px;
+    }
+    .path-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 6px;
+      padding-top: 8px;
+    }
+    .path-divider-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      opacity: 0.4;
+    }
+    @media (max-width: 480px) {
+      .path-diagram {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      .path-divider { display: none; }
+    }
+
+    /* ── Info box ── */
+    .infobox {
+      background: var(--cream);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+    .infobox p { margin-bottom: 8px; font-size: 17px; }
+    .infobox p:last-child { margin-bottom: 0; }
+
+    /* ── Recording UI ── */
+    .record-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0 10px;
+    }
+    .record-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: none;
+      background: var(--cream);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 0 8px var(--cream-dark), 0 0 0 12px var(--cream);
+      padding: 0;
+    }
+    .record-btn:hover { transform: scale(1.05); }
+    .record-btn.recording {
+      animation: pulse 1.4s ease-in-out infinite;
+      box-shadow: 0 0 0 8px rgba(201,168,76,0.2), 0 0 0 16px rgba(201,168,76,0.08);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 8px rgba(201,168,76,0.2), 0 0 0 16px rgba(201,168,76,0.08); }
+      50%       { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(201,168,76,0.25), 0 0 0 24px rgba(201,168,76,0.06); }
+    }
+    .record-label {
+      font-size: 17px;
+      color: var(--muted);
+      text-align: center;
+      min-height: 26px;
+    }
+    .record-label.active { color: var(--gold); font-weight: 600; }
+
+    /* ── Visualiser ── */
+    .visualiser-wrap {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .vis-bar {
+      width: 4px;
+      background: var(--teal);
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.08s;
+      opacity: 0.5;
+    }
+    .vis-bar.active { opacity: 1; }
+
+    /* ── Transcript area ── */
+    .transcript-box {
+      display: none;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .transcript-box.visible { display: block; }
+    .transcript-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    #transcript-edit {
+      width: 100%;
+      min-height: 140px;
+      border: 2px solid var(--cream-dark);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--navy);
+      background: var(--cream);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #transcript-edit:focus { border-color: var(--teal); }
+    .transcript-hint {
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    /* ── Path choice cards ── */
+    .path-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 520px) {
+      .path-cards { grid-template-columns: 1fr; }
+    }
+    .path-card {
+      border-radius: 14px;
+      padding: 24px 20px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .path-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .path-card.gold-card {
+      background: #FDF8EE;
+      border-color: var(--gold);
+    }
+    .path-card.teal-card {
+      background: #EEF5F5;
+      border-color: var(--teal);
+    }
+    .path-card-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .gold-card .path-card-badge { background: var(--gold); color: var(--navy); }
+    .teal-card .path-card-badge { background: var(--teal); color: var(--white); }
+    .path-card h3 {
+      font-family: 'Lora', serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+    .path-card p {
+      font-size: 16px;
+      margin-bottom: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── Consented form ── */
+    .consented-form {
+      display: none;
+      margin-top: 20px;
+      border-top: 2px solid var(--cream-dark);
+      padding-top: 24px;
+    }
+    .consented-form.visible { display: block; }
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      width: 100%;
+      border: 2px solid var(--cream-dark);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      color: var(--navy);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--teal); }
+
+    /* ── Withdrawal notice ── */
+    .withdrawal-notice {
+      background: var(--cream);
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-top: 24px;
+    }
+    .withdrawal-notice p { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
+    .withdrawal-notice p:last-child { margin-bottom: 0; }
+
+    /* ── Confirmation ── */
+    .confirm-icon {
+      width: 72px; height: 72px;
+      background: var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+    .gine-ref {
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .gine-ref-label {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .gine-ref-number {
+      font-family: 'Lora', serif;
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .gine-ref-hint { font-size: 14px; color: rgba(245,240,232,0.6); margin-top: 4px; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 40px 24px 24px;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ── Fallback banner ── */
+    .fallback-banner {
+      display: none;
+      background: #FFF3CD;
+      border: 1px solid #FBBF24;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 16px;
+      color: #92400E;
+      margin-bottom: 16px;
+    }
+    .fallback-banner.visible { display: block; }
+
+    /* ── Loading state ── */
+    .submitting-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(245,240,232,0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Lora', serif;
+      font-size: 22px;
+      color: var(--navy);
+    }
+    .submitting-overlay.visible { display: flex; }
+
+    /* ── Netlify hidden forms (for Netlify detection) ── */
+    .netlify-hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- Netlify form detection (hidden) -->
+<form name="arm1-anonymous" netlify netlify-honeypot="bot-field" class="netlify-hidden">
+  <input name="bot-field" />
+  <input name="transcript" />
+  <input name="timestamp" />
+  <input name="submission-id" />
+</form>
+<form name="arm2-consented" netlify netlify-honeypot="bot-field" class="netlify-hidden">
+  <input name="bot-field" />
+  <input name="transcript" />
+  <input name="gine-id" />
+  <input name="name" />
+  <input name="contact" />
+  <input name="timestamp" />
+</form>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 1: WELCOME
+════════════════════════════════════════════ -->
+<div id="page1" class="page active">
+  <div class="topbar">
+    <svg class="topbar-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+      <!-- Umbrella body -->
+      <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+      <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <!-- Spokes -->
+      <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <!-- People -->
+      <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+      <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+    </svg>
+    <div class="topbar-name">NCSUN <span>·</span> The Front Door</div>
+  </div>
+
+  <div class="card">
+    <h1>Your voice matters here.</h1>
+    <p class="lead">NCSUN is a community organisation based in Norwich. We connect people to the right support and make sure what communities know reaches the people who make decisions.</p>
+    <p>Everyone who contributes their experience is treated with dignity and respect.</p>
+
+    <hr class="rule">
+
+    <p>This page lets you share your experience of public services in your own words.</p>
+    <p>You do not need to give your name.</p>
+    <p>You do not need to create an account.</p>
+    <p>We will transcribe what you say. You will be able to read it back before you send anything.</p>
+    <p>Your experience helps us identify patterns and show decision-makers what needs to change.</p>
+
+    <hr class="rule">
+
+    <h2>What happens to your words?</h2>
+    <p>The diagram below shows the two paths your submission can take. You will choose which path at the end.</p>
+
+    <!-- Path diagram -->
+    <div class="path-diagram">
+      <div class="path-col">
+        <div class="path-header gold">Arm 1 — Anonymous</div>
+        <div class="path-step">You record your experience</div>
+        <div class="path-step">Your transcript is reviewed by a caseworker within 48 hours</div>
+        <div class="path-step">Any identifying details are removed</div>
+        <div class="path-step">Your experience joins a pattern database — no names, no identifiers</div>
+        <div class="path-step">Patterns are shared with decision-makers to drive system change</div>
+      </div>
+      <div class="path-divider">
+        <div class="path-divider-dot"></div>
+        <div class="path-divider-dot"></div>
+        <div class="path-divider-dot"></div>
+      </div>
+      <div class="path-col">
+        <div class="path-header teal">Arm 2 — Stay in touch</div>
+        <div class="path-step">You record your experience</div>
+        <div class="path-step">You leave your name and contact details</div>
+        <div class="path-step">A caseworker contacts you within 7 days</div>
+        <div class="path-step">Your experience is reviewed, anonymised, and added to the pattern database</div>
+        <div class="path-step">Patterns are shared with decision-makers to drive system change</div>
+      </div>
+    </div>
+
+    <div class="infobox">
+      <p>We check every submission for anything that could identify you before it is stored.</p>
+      <p>Your words are used to find patterns — not to identify you as an individual.</p>
+      <p>Nobody outside NCSUN receives anything that could identify you.</p>
+      <p>If you choose to leave your contact details, we aim to be in touch within 7 days.</p>
+      <p>You can ask us to remove your submission within 48 hours, if you left contact details and can tell us roughly when you submitted.</p>
+    </div>
+
+    <button class="btn btn-gold" onclick="goTo(2)">I am ready to continue →</button>
+  </div>
+
+  <div class="footer">
+    NCSUN CIC &nbsp;·&nbsp; Company No. 16798972 &nbsp;·&nbsp; ncsun.org &nbsp;·&nbsp; connection@ncsun.org
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 2: RECORD
+════════════════════════════════════════════ -->
+<div id="page2" class="page">
+  <div class="topbar">
+    <svg class="topbar-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+      <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+      <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+      <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+    </svg>
+    <div class="topbar-name">NCSUN <span>·</span> The Front Door</div>
+  </div>
+
+  <div class="card">
+    <h1>Press the logo when you are ready to record.</h1>
+
+    <div class="fallback-banner" id="fallback-banner">
+      Live transcription is not available in this browser. Your recording will still be saved. The transcript will appear once you stop recording.
+    </div>
+
+    <div class="record-wrap">
+      <button class="record-btn" id="record-btn" onclick="toggleRecording()" aria-label="Press to start recording">
+        <!-- NCSUN umbrella logo, larger -->
+        <svg width="80" height="80" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+          <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+          <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+          <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+          <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+          <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+          <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+          <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+          <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+          <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+          <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+        </svg>
+      </button>
+      <div class="record-label" id="record-label">Press once to start. Press again to stop.</div>
+
+      <!-- Audio visualiser -->
+      <div class="visualiser-wrap" id="visualiser"></div>
+    </div>
+
+    <!-- Transcript area (shown after recording stops) -->
+    <div class="transcript-box" id="transcript-box">
+      <hr class="rule">
+      <p><strong>This is what we heard.</strong></p>
+      <p>Read it back to check it makes sense. You can edit the text directly if you need to.</p>
+      <p class="transcript-hint">Before you continue: check there are no names, addresses, or reference numbers in the transcript. You can remove them by clicking on the text.</p>
+      <textarea id="transcript-edit" placeholder="Your transcript will appear here after recording…"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" id="listen-back-btn" onclick="listenBack()">▶ Listen back</button>
+        <button class="btn btn-ghost btn-sm" onclick="reRecord()">↺ Re-record</button>
+      </div>
+      <button class="btn btn-gold" onclick="continueFromRecord()" style="margin-top:20px;">This looks right — continue →</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    NCSUN CIC &nbsp;·&nbsp; Company No. 16798972 &nbsp;·&nbsp; ncsun.org &nbsp;·&nbsp; connection@ncsun.org
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 3: CHOOSE YOUR PATH
+════════════════════════════════════════════ -->
+<div id="page3" class="page">
+  <div class="topbar">
+    <svg class="topbar-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+      <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+      <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+      <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+    </svg>
+    <div class="topbar-name">NCSUN <span>·</span> The Front Door</div>
+  </div>
+
+  <div class="card">
+    <h1>Almost done.</h1>
+    <p>There are two ways to send your experience.</p>
+    <p>Both are equally valid. Choose whichever feels right for you.</p>
+
+    <div class="path-cards">
+      <div class="path-card gold-card">
+        <div class="path-card-badge">Option A</div>
+        <h3>Send anonymously</h3>
+        <p>Your transcript is reviewed and added to the pattern database. No name. No contact details.</p>
+      </div>
+      <div class="path-card teal-card" onclick="showConsentedForm()">
+        <div class="path-card-badge">Option B</div>
+        <h3>Stay in touch</h3>
+        <p>Leave your details and a caseworker will contact you within 7 days. You receive a reference number.</p>
+      </div>
+    </div>
+
+    <!-- Arm 1: anonymous -->
+    <div id="arm1-section">
+      <p style="font-size:16px; color:var(--muted);">Your transcript will be reviewed by a member of our team.<br>We will remove anything that could identify you before it is stored.<br>Your words will be used alongside others to identify patterns in how services are working.<br>No information that could identify you will ever be kept or shared.</p>
+      <button class="btn btn-gold" onclick="submitArm1()">Send anonymously →</button>
+    </div>
+
+    <!-- Arm 2: consented form -->
+    <div class="consented-form" id="arm2-section">
+      <p>If you would like us to follow up with you, leave your details below.</p>
+      <p>This is completely optional.</p>
+      <p>We aim to be in touch within 7 days.</p>
+      <p>You will receive a reference number so you can follow up with us if you need to.</p>
+
+      <div class="form-group">
+        <label for="contact-name">What would you like us to call you?</label>
+        <input type="text" id="contact-name" name="name" autocomplete="given-name" placeholder="First name, nickname, or whatever you prefer" />
+      </div>
+      <div class="form-group">
+        <label for="contact-details">How would you like us to contact you?</label>
+        <input type="text" id="contact-details" name="contact" placeholder="Phone number, email, or WhatsApp — whichever works best for you" />
+      </div>
+      <button class="btn btn-teal" onclick="submitArm2()">Send and stay in touch →</button>
+    </div>
+
+    <!-- Withdrawal rights -->
+    <div class="withdrawal-notice">
+      <p><strong>Changed your mind?</strong></p>
+      <p>If you left your contact details and submitted within the last 48 hours, you can ask us to remove your submission entirely.</p>
+      <p>Contact us at <strong>connection@ncsun.org</strong> and tell us roughly when you submitted. We will locate and delete it within 48 hours of your request.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    NCSUN CIC &nbsp;·&nbsp; Company No. 16798972 &nbsp;·&nbsp; ncsun.org &nbsp;·&nbsp; connection@ncsun.org
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 4A: CONFIRMATION — ANONYMOUS
+════════════════════════════════════════════ -->
+<div id="page4a" class="page">
+  <div class="topbar">
+    <svg class="topbar-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+      <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+      <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+      <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+    </svg>
+    <div class="topbar-name">NCSUN <span>·</span> The Front Door</div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <div class="confirm-icon">✓</div>
+    <h1>Thank you. Your experience has been received.</h1>
+    <p>A member of our team will review it shortly.</p>
+    <p>Your words will help us build the evidence that decision-makers cannot ignore.</p>
+    <hr class="rule">
+    <p class="small">Supported by the community, for the community, with the community.</p>
+    <p class="small" style="margin-top:16px;">NCSUN CIC &nbsp;·&nbsp; ncsun.org &nbsp;·&nbsp; connection@ncsun.org</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 4B: CONFIRMATION — CONSENTED
+════════════════════════════════════════════ -->
+<div id="page4b" class="page">
+  <div class="topbar">
+    <svg class="topbar-logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#C9A84C"/>
+      <path d="M8 20 Q20 6 32 20" fill="#1E2A3A"/>
+      <line x1="20" y1="20" x2="20" y2="30" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 30 Q20 33 23 33" stroke="#1E2A3A" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <line x1="20" y1="20" x2="10" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="14" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="20" y2="12" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="26" y2="14" stroke="#F5F0E8" stroke-width="1.2"/>
+      <line x1="20" y1="20" x2="30" y2="20" stroke="#F5F0E8" stroke-width="1.2"/>
+      <circle cx="11" cy="33" r="2" fill="#F5F0E8"/>
+      <circle cx="17" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="23" cy="35" r="2" fill="#F5F0E8"/>
+      <circle cx="29" cy="33" r="2" fill="#F5F0E8"/>
+    </svg>
+    <div class="topbar-name">NCSUN <span>·</span> The Front Door</div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <div class="confirm-icon" style="background:var(--teal);">✓</div>
+    <h1>Thank you. We will be in touch within 7 days.</h1>
+    <p>Your reference number is shown below.</p>
+    <p>Keep it if you would like to refer to your submission when you contact us.</p>
+
+    <div class="gine-ref">
+      <div class="gine-ref-label">Your GINE reference</div>
+      <div class="gine-ref-number" id="gine-display">—</div>
+      <div class="gine-ref-hint">Note this number in case you need to follow up</div>
+    </div>
+
+    <hr class="rule">
+    <p class="small">Supported by the community, for the community, with the community.</p>
+    <p class="small" style="margin-top:16px;">NCSUN CIC &nbsp;·&nbsp; ncsun.org &nbsp;·&nbsp; connection@ncsun.org</p>
+  </div>
+</div>
+
+<!-- Submitting overlay -->
+<div class="submitting-overlay" id="submitting-overlay">
+  Sending your experience…
+</div>
+
+
+<script>
+  // ── State ──────────────────────────────────────────────────
+  let gineCounter = 424;
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let audioBlob = null;
+  let audioUrl = null;
+  let recognition = null;
+  let isRecording = false;
+  let liveTranscript = '';
+  let audioCtx = null;
+  let analyser = null;
+  let visualiserInterval = null;
+
+  // ── Navigation ─────────────────────────────────────────────
+  function goTo(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── Visualiser ─────────────────────────────────────────────
+  function buildVisualiser() {
+    const wrap = document.getElementById('visualiser');
+    wrap.innerHTML = '';
+    for (let i = 0; i < 24; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'vis-bar';
+      bar.id = 'vis-' + i;
+      wrap.appendChild(bar);
+    }
+  }
+
+  function updateVisualiser() {
+    if (!analyser) return;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(data);
+    for (let i = 0; i < 24; i++) {
+      const val = data[Math.floor(i * data.length / 24)];
+      const h = Math.max(4, (val / 255) * 44);
+      const bar = document.getElementById('vis-' + i);
+      if (bar) {
+        bar.style.height = h + 'px';
+        bar.classList.toggle('active', val > 10);
+      }
+    }
+  }
+
+  // ── Recording ──────────────────────────────────────────────
+  function toggleRecording() {
+    if (!isRecording) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+  }
+
+  async function startRecording() {
+    isRecording = true;
+    audioChunks = [];
+    liveTranscript = '';
+    document.getElementById('record-btn').classList.add('recording');
+    document.getElementById('record-label').textContent = 'Recording… press to stop.';
+    document.getElementById('record-label').classList.add('active');
+    document.getElementById('transcript-box').classList.remove('visible');
+
+    // Microphone
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      // Visualiser
+      buildVisualiser();
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(stream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      source.connect(analyser);
+      visualiserInterval = setInterval(updateVisualiser, 80);
+
+      // MediaRecorder
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        audioUrl = URL.createObjectURL(audioBlob);
+        finishRecording();
+      };
+      mediaRecorder.start();
+
+      // Speech recognition
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SR) {
+        recognition = new SR();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-GB';
+        recognition.onresult = (event) => {
+          let interim = '';
+          let final = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) final += event.results[i][0].transcript;
+            else interim += event.results[i][0].transcript;
+          }
+          liveTranscript += final;
+          document.getElementById('transcript-edit').value = liveTranscript + interim;
+        };
+        recognition.onerror = () => {
+          document.getElementById('fallback-banner').classList.add('visible');
+        };
+        recognition.start();
+      } else {
+        document.getElementById('fallback-banner').classList.add('visible');
+      }
+    } catch(err) {
+      isRecording = false;
+      document.getElementById('record-btn').classList.remove('recording');
+      document.getElementById('record-label').textContent = 'Microphone access is needed to record. Please allow access and try again.';
+      document.getElementById('record-label').classList.remove('active');
+    }
+  }
+
+  function stopRecording() {
+    if (recognition) { recognition.stop(); recognition = null; }
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    if (visualiserInterval) { clearInterval(visualiserInterval); visualiserInterval = null; }
+    if (audioCtx) { audioCtx.close(); audioCtx = null; }
+
+    // reset bars
+    for (let i = 0; i < 24; i++) {
+      const bar = document.getElementById('vis-' + i);
+      if (bar) { bar.style.height = '4px'; bar.classList.remove('active'); }
+    }
+  }
+
+  function finishRecording() {
+    isRecording = false;
+    document.getElementById('record-btn').classList.remove('recording');
+    document.getElementById('record-label').textContent = 'Recording complete.';
+    document.getElementById('record-label').classList.remove('active');
+    document.getElementById('transcript-box').classList.add('visible');
+    if (!document.getElementById('transcript-edit').value) {
+      document.getElementById('transcript-edit').value = liveTranscript;
+    }
+  }
+
+  function listenBack() {
+    if (!audioUrl) return;
+    const audio = new Audio(audioUrl);
+    audio.play();
+    document.getElementById('listen-back-btn').textContent = '▶ Playing…';
+    audio.onended = () => { document.getElementById('listen-back-btn').textContent = '▶ Listen back'; };
+  }
+
+  function reRecord() {
+    document.getElementById('transcript-edit').value = '';
+    document.getElementById('transcript-box').classList.remove('visible');
+    document.getElementById('record-label').textContent = 'Press once to start. Press again to stop.';
+    liveTranscript = '';
+    audioBlob = null;
+    audioUrl = null;
+  }
+
+  function continueFromRecord() {
+    const txt = document.getElementById('transcript-edit').value.trim();
+    if (!txt) {
+      alert('Please record something before continuing.');
+      return;
+    }
+    goTo(3);
+  }
+
+  // ── Screen 3 helpers ───────────────────────────────────────
+  function showConsentedForm() {
+    document.getElementById('arm2-section').classList.add('visible');
+    document.getElementById('arm2-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Submission: Arm 1 ──────────────────────────────────────
+  async function submitArm1() {
+    const transcript = document.getElementById('transcript-edit').value.trim();
+    if (!transcript) { goTo(4); return; }
+
+    const submissionId = 'ARM1-' + Date.now();
+    const timestamp = new Date().toISOString();
+
+    document.getElementById('submitting-overlay').classList.add('visible');
+
+    const formData = new FormData();
+    formData.append('form-name', 'arm1-anonymous');
+    formData.append('transcript', transcript);
+    formData.append('timestamp', timestamp);
+    formData.append('submission-id', submissionId);
+    formData.append('bot-field', '');
+
+    try {
+      await fetch('/', { method: 'POST', body: formData });
+    } catch(e) {
+      // Still show confirmation even if Netlify fetch fails in preview
+    }
+
+    document.getElementById('submitting-overlay').classList.remove('visible');
+    goTo('4a');
+  }
+
+  // ── Submission: Arm 2 ──────────────────────────────────────
+  async function submitArm2() {
+    const transcript = document.getElementById('transcript-edit').value.trim();
+    const name = document.getElementById('contact-name').value.trim();
+    const contact = document.getElementById('contact-details').value.trim();
+
+    if (!contact) {
+      document.getElementById('contact-details').focus();
+      document.getElementById('contact-details').style.borderColor = 'var(--burgundy)';
+      return;
+    }
+
+    gineCounter++;
+    const gineId = gineCounter;
+    const timestamp = new Date().toISOString();
+
+    document.getElementById('submitting-overlay').classList.add('visible');
+
+    const formData = new FormData();
+    formData.append('form-name', 'arm2-consented');
+    formData.append('transcript', transcript);
+    formData.append('gine-id', String(gineId));
+    formData.append('name', name);
+    formData.append('contact', contact);
+    formData.append('timestamp', timestamp);
+    formData.append('bot-field', '');
+
+    try {
+      await fetch('/', { method: 'POST', body: formData });
+    } catch(e) {}
+
+    document.getElementById('submitting-overlay').classList.remove('visible');
+    document.getElementById('gine-display').textContent = String(gineId);
+    goTo('4b');
+  }
+</script>
+
+</body>
+</html>
