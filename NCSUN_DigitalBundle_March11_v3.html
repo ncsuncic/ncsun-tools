@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NCSUN · Share-Exchange · 11 March 2026</title>
+<style>
+:root {
+  --slate:    #4A6580;
+  --canvas:   #F8F7F2;
+  --sage:     #7C8C74;
+  --terra:    #A64D3D;
+  --mustard:  #D4B464;
+  --ink:      #2C3E50;
+  --light:    #EEE9E0;
+  --border:   rgba(74,101,128,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  background: var(--slate);
+  z-index: 100;
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+nav ul {
+  display: inline-flex;
+  list-style: none;
+  padding: 0 1rem;
+  gap: 0;
+}
+nav a {
+  display: block;
+  padding: 14px 16px;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+nav a:hover, nav a:focus {
+  color: #fff;
+  border-bottom-color: var(--mustard);
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 4rem 1.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+section:last-of-type { border-bottom: none; }
+
+/* ── COVER ── */
+#cover {
+  background: var(--slate);
+  color: #fff;
+  max-width: 100%;
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  border-bottom: 4px solid var(--mustard);
+}
+.cover-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mustard);
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+}
+.cover-title {
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-weight: bold;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+.cover-title em {
+  color: var(--mustard);
+  font-style: normal;
+}
+.cover-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 2rem;
+}
+.cover-rule {
+  width: 48px;
+  height: 3px;
+  background: var(--mustard);
+  margin: 2rem auto 0;
+}
+
+/* ── SECTION LABELS ── */
+.label {
+  font-size: 0.68rem;
+  font-weight: bold;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 0.75rem;
+}
+
+/* ── HEADINGS ── */
+h2 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: bold;
+  color: var(--slate);
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+h2 em {
+  color: var(--mustard);
+  font-style: normal;
+}
+h3 {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: var(--slate);
+  margin-bottom: 0.5rem;
+}
+
+/* ── BODY TEXT ── */
+p { margin-bottom: 1rem; color: var(--ink); }
+p:last-child { margin-bottom: 0; }
+
+.closing {
+  font-style: italic;
+  color: var(--sage);
+  margin-top: 1.5rem;
+}
+
+/* ── STAT BLOCK ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+.stat {
+  background: var(--light);
+  border-top: 3px solid var(--mustard);
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--slate);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--sage);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: bold;
+}
+
+/* ── CALLOUT ── */
+.callout {
+  border-left: 4px solid var(--mustard);
+  background: var(--light);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.callout h3 { color: var(--slate); margin-bottom: 0.75rem; }
+
+/* ── SPOKES ── */
+.spokes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+.spoke {
+  padding: 1rem 1.1rem;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--slate);
+}
+.spoke-name {
+  font-weight: bold;
+  color: var(--slate);
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.spoke-desc {
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* ── ACCOUNTS ── */
+.accounts-intro {
+  font-size: 0.95rem;
+  color: var(--sage);
+  font-style: italic;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.account {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--slate);
+  background: #fff;
+  overflow: hidden;
+}
+.account-header {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  min-height: 56px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.account-header:hover { background: var(--light); }
+.account-title { font-weight: bold; color: var(--slate); font-size: 0.95rem; }
+.account-sub { font-size: 0.8rem; color: var(--sage); margin-top: 0.15rem; }
+.account-toggle {
+  color: var(--mustard);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.account-toggle.open { transform: rotate(45deg); }
+.account-body {
+  display: none;
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: #444;
+}
+.account-body.open { display: block; }
+.account-body blockquote {
+  border-left: 3px solid var(--mustard);
+  padding-left: 1rem;
+  color: #555;
+  font-style: italic;
+  margin: 1rem 0;
+}
+
+/* ── CO-CREATE CARDS ── */
+.cocreate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.cocreate-card {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--canvas);
+}
+.cocreate-card h3 {
+  font-size: 0.9rem;
+  color: var(--terra);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+.cocreate-card p { font-size: 0.85rem; color: #555; margin: 0; }
+
+/* ── TOOLS ── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.tool-card {
+  display: block;
+  padding: 1.25rem;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--slate);
+  text-decoration: none;
+  color: inherit;
+  transition: border-top-color 0.2s, background 0.2s;
+  min-height: 56px;
+}
+.tool-card:hover { border-top-color: var(--mustard); background: #fff; }
+.tool-card.sage { border-top-color: var(--sage); }
+.tool-card.terra { border-top-color: var(--terra); }
+.tool-card.mustard { border-top-color: var(--mustard); }
+.tool-card h3 { font-size: 0.95rem; color: var(--slate); margin-bottom: 0.3rem; }
+.tool-card p { font-size: 0.82rem; color: #666; margin: 0 0 0.5rem; }
+.tool-url { font-size: 0.72rem; color: var(--mustard); font-weight: bold; letter-spacing: 0.04em; }
+
+/* ── MAGS ── */
+.mag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.mag-card {
+  padding: 1.5rem;
+  background: var(--light);
+  border: 1px solid var(--border);
+}
+.mag-card h3 { font-size: 1rem; color: var(--slate); margin-bottom: 0.5rem; }
+.mag-card p { font-size: 0.85rem; color: #555; margin-bottom: 1rem; }
+.mag-link {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: var(--terra);
+  text-decoration: none;
+  border-bottom: 2px solid var(--terra);
+  padding-bottom: 2px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  background: var(--slate);
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  min-height: 56px;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--terra); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  background: transparent;
+  color: var(--slate);
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border: 2px solid var(--slate);
+  min-height: 56px;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-secondary:hover { background: var(--slate); color: #fff; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--slate);
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  font-size: 0.82rem;
+}
+footer a { color: var(--mustard); text-decoration: none; }
+footer strong { color: #fff; }
+
+/* ── PROGRAMME TABLE ── */
+.programme {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+.programme tr { border-bottom: 1px solid var(--border); }
+.programme td { padding: 0.75rem 0.5rem; vertical-align: top; }
+.programme td:first-child {
+  font-weight: bold;
+  color: var(--slate);
+  white-space: nowrap;
+  padding-right: 1.5rem;
+  width: 80px;
+}
+
+@media (max-width: 480px) {
+  section { padding: 3rem 1.2rem; }
+  #cover { padding: 3.5rem 1.2rem 3rem; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Page sections">
+  <ul>
+    <li><a href="#who-we-are">Who we are</a></li>
+    <li><a href="#numbers">The numbers</a></li>
+    <li><a href="#accounts">The accounts</a></li>
+    <li><a href="#building">What we're building</a></li>
+    <li><a href="#cocreate">Co-create</a></li>
+    <li><a href="#tools">Live tools</a></li>
+    <li><a href="#magazines">Magazines</a></li>
+    <li><a href="#feedback">Feedback</a></li>
+  </ul>
+</nav>
+
+<!-- COVER -->
+<section id="cover">
+  <div class="cover-eyebrow">NCSUN CIC &middot; First Professional Share-Exchange</div>
+  <h1 class="cover-title">Everything from<br/><em>today's room.</em></h1>
+  <p class="cover-sub">11 March 2026 &middot; Norwich Unity Hub &middot; Garden Room</p>
+  <div class="cover-rule"></div>
+</section>
+
+<!-- WHO WE ARE -->
+<section id="who-we-are">
+  <div class="label">Who we are</div>
+  <h2>NCSUN and <em>why today happened.</em></h2>
+
+  <p>NCSUN &mdash; Norwich Community Support Umbrella Network &mdash; is a Community Interest Company built on one founding principle: lived experience is core expertise. Not a nice addition. Not a consultation tick-box. The actual foundation.</p>
+
+  <p>We started with a cupboard, a community, and a question nobody was answering: why do people who need support keep falling through the gaps between services that are supposed to catch them? Twenty months later, we have a partial answer. It is not because the services don't exist. It is because the systems that are supposed to connect them don't work, and the people closest to that failure have never been asked to help fix it.</p>
+
+  <p>Today was an attempt to change that. You brought your professional expertise. We brought six accounts of what it looks like when the system fails the same person, repeatedly, across five different service areas. Together, that is something neither of us could produce alone.</p>
+
+  <div class="callout">
+    <h3>Five spokes. One organisation.</h3>
+    <div class="spokes">
+      <div class="spoke">
+        <div class="spoke-name">Community Anchor</div>
+        <div class="spoke-desc">Easton Community Cupboard. No one should fall through the gap between services.</div>
+      </div>
+      <div class="spoke">
+        <div class="spoke-name">LDC Centre</div>
+        <div class="spoke-desc">Learning, Development, Co-creation. Skills and capacity built from the ground up.</div>
+      </div>
+      <div class="spoke">
+        <div class="spoke-name">Ethical Technology</div>
+        <div class="spoke-desc">Connect-EnGINE. Ethical technology built from lived experience. Intelligence that maps the system, not the person.</div>
+      </div>
+      <div class="spoke">
+        <div class="spoke-name">Ethical Finance</div>
+        <div class="spoke-desc">Nobody Is Out Of Pocket. Money moves toward the people who generate value.</div>
+      </div>
+      <div class="spoke">
+        <div class="spoke-name">Legal Integrity</div>
+        <div class="spoke-desc">We hold ourselves to the highest standard we can demonstrate. Because the communities we serve deserve nothing less.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="closing">Asset locked to The Feed CIC &middot; Company No. 16798972 &middot; Lived Experience as Core Expertise</p>
+</section>
+
+<!-- THE NUMBERS -->
+<section id="numbers">
+  <div class="label">The proof of concept</div>
+  <h2>Twenty months.<br/><em>These are the numbers.</em></h2>
+
+  <p>No paid staff. No grant funding for operations. Everything you saw today was built on voluntary commitment, lived experience, and the stubborn belief that this was worth doing before anyone else believed it too.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-number">1,673</span>
+      <span class="stat-label">People reached</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">1,225</span>
+      <span class="stat-label">ECC visitors</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">423</span>
+      <span class="stat-label">GINE entries</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">76</span>
+      <span class="stat-label">NLEH members</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">8</span>
+      <span class="stat-label">Districts mapped</span>
+    </div>
+    <div class="stat">
+      <span class="stat-number">&pound;0</span>
+      <span class="stat-label">Paid staff</span>
+    </div>
+  </div>
+
+  <p class="closing">These numbers are not a pitch. They are what happens when people who have been failed by systems decide to build something better.</p>
+</section>
+
+<!-- THE ACCOUNTS -->
+<section id="accounts">
+  <div class="label">The six accounts</div>
+  <h2>What you worked with<br/><em>at the stations.</em></h2>
+
+  <p class="accounts-intro">You have already met these stories. They are here so you can return to them, share them, and carry them into whatever comes next. Every account was processed through the GINE protocol &mdash; names, locations, and identifying details removed. What remains is the systemic pattern.</p>
+
+  <!-- Account 1 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a1')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">Community Anchor</div>
+        <div class="account-sub">A new build on the outskirts. The nearest shop half a mile away. Nearly didn't send the email.</div>
+      </div>
+      <span class="account-toggle" id="a1-toggle">+</span>
+    </div>
+    <div class="account-body" id="a1">
+      <blockquote>"I sat with someone for well over an hour and sobbed my heart out. I felt pathetic asking for help but they just listened and they were so kind and so human about it that it did not feel like a transaction at all. They bent their own rules for me that day because our postcode was outside their area but they registered us anyway."</blockquote>
+      <p>A family of three &mdash; one parent with limited mobility, one autistic child, no transport, first week in a new property on the outskirts of the city. None of what followed &mdash; British Red Cross, Your Own Place CIC, St Giles Trust, a monthly money management course &mdash; starts without a single email to The Feed. An email she nearly didn't send.</p>
+      <p class="closing">The systemic gap: every referral in this account came through one discretionary act of kindness from someone who bent the rules. There is no version of this story that works without that.</p>
+    </div>
+  </div>
+
+  <!-- Account 2 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a2')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">Legal Integrity</div>
+        <div class="account-sub">Four years. Two voices. The system was not built for either of them.</div>
+      </div>
+      <span class="account-toggle" id="a2-toggle">+</span>
+    </div>
+    <div class="account-body" id="a2">
+      <blockquote>"The court said I needed an assessment to work out what help I would need to follow what was happening. They did the assessment. The help they said I needed never happened."</blockquote>
+      <blockquote>"I did not know bundles were supposed to be under 350 pages. Mine was 669 pages. I did not know because nobody told me and I could not afford a solicitor. The barrister for the local authority found me before we went in and told me the bundle was good."</blockquote>
+      <p>Two people. Two separate family law cases running at the same time. Both neurodivergent. Neither able to afford legal representation. One had an intermediary assessment that was then ignored. One taught herself enough law to produce a bundle a barrister complimented &mdash; and was told by the judge it was all over the place.</p>
+      <p class="closing">The system did not fail them because they were incapable. It failed them because it was not built for them.</p>
+    </div>
+  </div>
+
+  <!-- Account 3 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a3')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">LDC Centre</div>
+        <div class="account-sub">From pantry member to second year LLB. The route exists. It is just not signposted.</div>
+      </div>
+      <span class="account-toggle" id="a3-toggle">+</span>
+    </div>
+    <div class="account-body" id="a3">
+      <blockquote>"It was heartbreaking. I had been earning my own money. I had been good at it. And now I was back on benefits, supporting my children, knowing what I was capable of and not being able to do anything with it."</blockquote>
+      <p>A celebrant business started in 2013. A breast cancer diagnosis in 2015, a week before her twenty-eighth birthday. A restart attempt in 2019. Lockdown. A &pound;150 HMRC fine. Then, in 2024, a pantry membership at St Giles Trust that led to an NVQ, then Open Learn, then an Access to Law course, then the first year of an LLB. Now midway through her second year.</p>
+      <p>She did not find her route through a careers service or a structured pathway. She found it through a food pantry. That is not a design feature. It is a consequence of the right person being in the right place at the right time.</p>
+      <p class="closing">"I am still not sure [the system] does now" &mdash; on whether it has options for people like her.</p>
+    </div>
+  </div>
+
+  <!-- Account 4 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a4')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">Ethical Finance</div>
+        <div class="account-sub">&pound;195 out of a maintenance loan. The true cost ran into the thousands. None of it counts.</div>
+      </div>
+      <span class="account-toggle" id="a4-toggle">+</span>
+    </div>
+    <div class="account-body" id="a4">
+      <blockquote>"Nobody paid me to do any of it. I used my own money because the alternative was it not happening at all. The food and everything else came to &pound;195. If the hours I had put in had been charged at any kind of professional rate the true cost would have run into the thousands."</blockquote>
+      <p>With one week's notice: a venue found, materials designed, food sourced, fourteen people in the room, twenty-eight Google Form responses before it had finished. A community event that demonstrably served the public good, run on a maintenance loan and a Universal Credit top-up, with no mechanism to reimburse a single penny of it.</p>
+      <p class="closing">Community infrastructure does not appear from nowhere. Somebody builds it. And right now the people most likely to see what is needed and act on it are often the ones least able to absorb the cost of doing so.</p>
+    </div>
+  </div>
+
+  <!-- Account 5 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a5')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">Ethical Technology</div>
+        <div class="account-sub">31 tablets a day. Brain fog. A prompt she wrote herself. A route no service designed.</div>
+      </div>
+      <span class="account-toggle" id="a5-toggle">+</span>
+    </div>
+    <div class="account-body" id="a5">
+      <blockquote>"To be honest, I did a better job of clearing out my own bank account when I was in crisis than any hacker would have done."</blockquote>
+      <p>In late 2022: 31 tablets a day, four rounds of medication for scoliosis, degenerative disc disease and cancer-related fatigue, all interacting with each other. Limited use of one leg. Constant brain fog. No support network. Ad hoc delivery driving that did not cover the bills.</p>
+      <p>In 2024 she did a money management course and started using AI tools to understand her own finances. She put in a prompt that her data should not be retained. She did it every time. It worked.</p>
+      <p class="closing">The tools existed. The bridge to them did not. She built the bridge herself. The gap between the person and the tool that could help them is what GINE exists to map and close.</p>
+    </div>
+  </div>
+
+  <!-- Account 6 -->
+  <div class="account">
+    <div class="account-header" onclick="toggleAccount('a6')" role="button" aria-expanded="false" tabindex="0">
+      <div>
+        <div class="account-title">GINE &middot; The database</div>
+        <div class="account-sub">Station 6 was different. There was no individual account.</div>
+      </div>
+      <span class="account-toggle" id="a6-toggle">+</span>
+    </div>
+    <div class="account-body" id="a6">
+      <p>There was a printed list of 24 services, organisations and community groups across Norwich and Norfolk. Built entirely from publicly available information, cross-referenced across multiple sources. And there were sticky notes.</p>
+      <p>The task: if your organisation was not on the list, write its name on a sticky note and put it on the board. If a service was missing, name it. Every sticky note becomes a new row in the GINE database &mdash; 423 rows of intelligence gathered across eight Norwich districts, mapping services, referral pathways, and the gaps people fall through.</p>
+      <p class="closing">What you added today is already part of it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE'RE BUILDING -->
+<section id="building">
+  <div class="label">2026 programme</div>
+  <h2>What today was<br/><em>the beginning of.</em></h2>
+
+  <p>Today was the first in a programme running throughout 2026, alternating between Mustard Share Exchange events for professionals and Community Collective events open to all. Every community event feeds directly into the next professional forum. Every forum shapes what we take back to the community. All events fall on the 11th.</p>
+
+  <div class="callout">
+    <h3>The destination: January 2027</h3>
+    <p>A Quarterly Round Table &mdash; the first official step toward what Norwich could become, including the first formal discussions regarding a future Poverty Truth Norwich Commission. Everything gathered across 2026 feeds into that table, anonymised, evidenced, and actionable. Today is one of the first bricks.</p>
+  </div>
+
+  <table class="programme">
+    <tr><td>11 Mar 2026</td><td>First Mustard Share Exchange &mdash; today</td></tr>
+    <tr><td>11 Apr 2026</td><td>Community Collective #2 &mdash; Norwich City ABC &mdash; open to all</td></tr>
+    <tr><td>11 May 2026</td><td>Mustard Share Exchange #2 (provisional)</td></tr>
+    <tr><td>11 Jun 2026</td><td>Community Collective #3</td></tr>
+    <tr><td>11 Jul 2026</td><td>Mustard Share Exchange #3</td></tr>
+    <tr><td>11 Aug 2026</td><td>Community Collective #4</td></tr>
+    <tr><td>11 Sep 2026</td><td>Mustard Share Exchange #4</td></tr>
+    <tr><td>11 Oct 2026</td><td>Community Collective #5</td></tr>
+    <tr><td>11 Nov 2026</td><td>Pre-Round Table Briefing</td></tr>
+    <tr><td>11 Dec 2026</td><td>Community Collective #6</td></tr>
+    <tr><td>Jan 2027</td><td>Quarterly Round Table &mdash; the destination</td></tr>
+  </table>
+
+  <p class="closing">Everything we gather is anonymised, evidenced, and brought back to the people it came from.</p>
+</section>
+
+<!-- CO-CREATE -->
+<section id="cocreate">
+  <div class="label">What comes next</div>
+  <h2>What could we<br/><em>co-create?</em></h2>
+
+  <p>We are not asking for charity. We are asking whether what you saw today is something your organisation wants to be part of building. There are four specific ways that could work.</p>
+
+  <div class="cocreate-grid">
+    <div class="cocreate-card">
+      <h3>Volunteers</h3>
+      <p>Individual volunteers, social media live-connecting, or corporate volunteering arrangements. Skills-based or presence-based &mdash; both matter.</p>
+    </div>
+    <div class="cocreate-card">
+      <h3>Space &amp; resources</h3>
+      <p>Reciprocal agreements for venue space and resources. We bring the community. You provide the room.</p>
+    </div>
+    <div class="cocreate-card">
+      <h3>Formal partnership</h3>
+      <p>A running story and article in NCSUN's magazines, published quarterly from January 2027. Quarter page &pound;100/year. Half page &pound;200/year. Full page &pound;400/year.</p>
+      <p style="font-size:0.8rem; color:var(--sage); margin-top:0.5rem;">Micro organisations currently spend an estimated &pound;750/year on standalone print. Mid-sized charities &pound;1,500&ndash;&pound;3,000. Partners save 86&ndash;95% on print costs. Every pound saved goes back into your frontline. Every partnership is co-created &mdash; no fixed template, no one-size-fits-all.</p>
+    </div>
+    <div class="cocreate-card">
+      <h3>Lived experience consultancy</h3>
+      <p>We completed our first consultancy pilots as a community group before registration &mdash; six consultants, six weeks, eight actionable recommendations, four still in use, independently valued at &pound;6,000.</p>
+      <p style="font-size:0.8rem; color:var(--sage); margin-top:0.5rem;">Over the next six months we are looking to partner with organisations to run further pilots. Each pilot helps us build the evidence base to move our volunteers into paid part-time or ad hoc roles. If you would like to be one of those organisations, that conversation starts now.</p>
+    </div>
+  </div>
+
+  <p>If today has prompted thinking about what any of this could look like for your organisation, that conversation starts with Charli.</p>
+
+  <div class="btn-row">
+    <a class="btn-primary" href="mailto:charli@ncsun.org?subject=Following up from March 11th">Email Charli directly</a>
+    <a class="btn-secondary" href="https://www.ncsun.org" target="_blank" rel="noopener">Visit ncsun.org</a>
+  </div>
+</section>
+
+<!-- LIVE TOOLS -->
+<section id="tools">
+  <div class="label">Built from lived experience</div>
+  <h2>The <em>live tools.</em></h2>
+
+  <p>Every tool below is live, free to use, and open to co-creation. Built from the intelligence gathered through the GINE protocol and the NLEH network. No login required. Works on any device.</p>
+
+  <div class="tools-grid">
+    <a class="tool-card" href="https://ncsun-cic.netlify.app" target="_blank" rel="noopener">
+      <h3>NCSUN Digital Suite</h3>
+      <p>The full index of all live tools.</p>
+      <div class="tool-url">ncsun-cic.netlify.app</div>
+    </a>
+    <a class="tool-card sage" href="https://ncsun-cic.netlify.app/gine_master_log_v2.html" target="_blank" rel="noopener">
+      <h3>GINE Master Log</h3>
+      <p>423 rows of community intelligence across 8 Norwich districts.</p>
+      <div class="tool-url">GINE Master Log V2</div>
+    </a>
+    <a class="tool-card mustard" href="https://ncsun-cic.netlify.app/NCSUN_Station6_GINEDatabase.html" target="_blank" rel="noopener">
+      <h3>Services Database</h3>
+      <p>The live database you contributed to at Station 6 today.</p>
+      <div class="tool-url">Station 6 &middot; GINE Database</div>
+    </a>
+    <a class="tool-card" href="https://ncsun-cic.netlify.app/nleh_database_v1.html" target="_blank" rel="noopener">
+      <h3>NLEH Network</h3>
+      <p>76 anonymised consented members. Norwich Lived Experience Hub.</p>
+      <div class="tool-url">NLEH Database V1</div>
+    </a>
+    <a class="tool-card terra" href="https://ncsun-cic.netlify.app/gine_financial_log_v2.html" target="_blank" rel="noopener">
+      <h3>Financial Roadmap Log</h3>
+      <p>Tracking financial journey data from the NIOP pilot.</p>
+      <div class="tool-url">Financial Log V2</div>
+    </a>
+    <a class="tool-card sage" href="https://ncsun-cic.netlify.app/preventionengine.html" target="_blank" rel="noopener">
+      <h3>Prevention Engine</h3>
+      <p>PII-stripped intelligence capture. Built for frontline use.</p>
+      <div class="tool-url">Prevention Engine</div>
+    </a>
+  </div>
+</section>
+
+<!-- MAGAZINES -->
+<section id="magazines">
+  <div class="label">Community publishing</div>
+  <h2>The two <em>magazines.</em></h2>
+
+  <p>NCSUN publishes two pilot magazines. Both were available in the room today. Both are live and linkable &mdash; share them freely.</p>
+
+  <div class="mag-grid">
+    <div class="mag-card">
+      <h3>Norwich Community Anchor &mdash; Pilot 2</h3>
+      <p>Easton, the cupboard, and what community infrastructure actually looks like. Available in print today. Digital version coming.</p>
+    </div>
+    <div class="mag-card">
+      <h3>NLE Network Magazine &mdash; Pilot 2</h3>
+      <p>Voices, intelligence, and what the network is building. Available in print today. Digital version coming.</p>
+    </div>
+  </div>
+
+  <p style="font-size:0.88rem; color:#666; margin-top:1rem;">Both magazines are printed in-house. We are exploring print partnerships &mdash; connections welcome. Could your organisation contribute content or be featured? Email <strong>charli@ncsun.org</strong> directly.</p>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback">
+  <div class="label">Your response</div>
+  <h2>Five minutes. <em>Be the start of making it matter.</em></h2>
+
+  <p>The feedback form covers your experience of today, what your organisation will do differently, your thoughts on the tools and magazines, and whether you want to be part of what comes next. All responses are anonymous unless you choose to share your details.</p>
+
+  <div class="btn-row">
+    <a class="btn-primary" href="https://forms.gle/ENxepBgBE9jtbjjt8" target="_blank" rel="noopener">Complete the feedback form</a>
+    <a class="btn-secondary" href="mailto:charli@ncsun.org?subject=March 11th feedback">Email feedback directly</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:0.5rem;">
+    <strong>NCSUN CIC</strong> &middot; Company No. 16798972 &middot; Asset Locked to The Feed CIC
+  </p>
+  <p style="margin-bottom:1rem;">
+    <a href="https://www.ncsun.org">ncsun.org</a> &middot;
+    <a href="mailto:charli@ncsun.org">charli@ncsun.org</a> &middot;
+    <a href="mailto:connection@ncsun.org">connection@ncsun.org</a>
+  </p>
+  <p style="font-size:0.75rem; color:rgba(255,255,255,0.4);">Lived Experience as Core Expertise &middot; PAS 6463:2022 / DMCPL</p>
+</footer>
+
+<script>
+function toggleAccount(id) {
+  var body = document.getElementById(id);
+  var toggle = document.getElementById(id + '-toggle');
+  var header = toggle.closest('.account-header');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+  toggle.textContent = isOpen ? '+' : '\u00d7';
+  header.setAttribute('aria-expanded', String(!isOpen));
+}
+document.querySelectorAll('.account-header').forEach(function(h) {
+  h.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      h.click();
+    }
+  });
+});
+</script>
+
+</body>
+</html>
