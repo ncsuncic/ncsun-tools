@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Canopy — NCSUN Share-Exchange · 11 March 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:      #4A6580;
+  --canvas:    #F8F7F2;
+  --sage:      #7C8C74;
+  --terracotta:#A64D3D;
+  --mustard:   #D4B464;
+  --mustard-lt:#EDD98A;
+  --white:     #FFFFFF;
+  --text:      #4A6580;
+  --text-soft: #4A5A68;
+  --border:    rgba(29,45,61,0.12);
+}
+
+html, body {
+  height: 100%;
+  background: var(--canvas);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ── SCREEN SYSTEM ── */
+#app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.screen.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* ── HEADER ── */
+.screen-header {
+  background: var(--slate);
+  padding: 10px 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.header-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mustard);
+}
+.header-time {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 300;
+  white-space: nowrap;
+}
+.mustard-rule {
+  height: 2px;
+  background: var(--mustard);
+  flex-shrink: 0;
+}
+
+/* ── SCROLLABLE CONTENT AREA ── */
+.screen-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px 100px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── TYPOGRAPHY ── */
+h1, h2, h3 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+h1 { font-size: 26px; line-height: 1.2; color: var(--slate); }
+h2 { font-size: 20px; line-height: 1.25; color: var(--slate); }
+h3 { font-size: 16px; line-height: 1.3; color: var(--slate); }
+p  { font-size: 15px; line-height: 1.6; color: var(--text-soft); }
+
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 6px;
+}
+.screen-body h1 { margin-bottom: 10px; }
+.screen-body h2 { margin-bottom: 8px; margin-top: 20px; }
+.screen-body p  { margin-bottom: 12px; }
+
+/* ── CANOPY CHARACTER + BUBBLE ── */
+.canopy-row {
+  position: fixed;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 14px 0 12px;
+  gap: 10px;
+  z-index: 40;
+  pointer-events: none;
+}
+.canopy-wrap {
+  flex-shrink: 0;
+  width: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: all;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.canopy-svg {
+  width: 48px;
+  height: 60px;
+}
+
+/* Canopy CSS animations */
+@keyframes idle-bob {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+/* Hop-in entrance: slides from off-screen left, does two little hops */
+@keyframes hop-in {
+  0%   { transform: translateX(-80px) translateY(0); opacity: 0; }
+  20%  { transform: translateX(0px) translateY(0); opacity: 1; }
+  35%  { transform: translateX(0px) translateY(-14px) scaleX(0.92) scaleY(1.08); }
+  50%  { transform: translateX(0px) translateY(0) scaleX(1.06) scaleY(0.94); }
+  62%  { transform: translateX(0px) translateY(-8px) scaleX(0.95) scaleY(1.05); }
+  75%  { transform: translateX(0px) translateY(0) scaleX(1.03) scaleY(0.97); }
+  88%  { transform: translateX(0px) translateY(-3px); }
+  100% { transform: translateX(0px) translateY(0); opacity: 1; }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  30%       { transform: translateY(-12px) scaleY(1.05); }
+  60%       { transform: translateY(-4px) scaleY(0.97); }
+}
+@keyframes wave {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(-15deg); }
+  40%  { transform: rotate(10deg); }
+  60%  { transform: rotate(-10deg); }
+  80%  { transform: rotate(8deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes celebrate {
+  0%   { transform: translateY(0) rotate(0deg); }
+  20%  { transform: translateY(-14px) rotate(-8deg); }
+  40%  { transform: translateY(-8px) rotate(8deg); }
+  60%  { transform: translateY(-14px) rotate(-5deg); }
+  80%  { transform: translateY(-4px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+@keyframes think {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%       { transform: translateX(3px) rotate(4deg); }
+  75%       { transform: translateX(-3px) rotate(-4deg); }
+}
+/* Bubble fade-in, slightly delayed after hop */
+@keyframes bubble-in {
+  0%   { opacity: 0; transform: translateX(-8px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.canopy-svg.anim-bob      { animation: idle-bob 2.4s ease-in-out infinite; }
+.canopy-svg.anim-hop-in   { animation: hop-in 0.75s cubic-bezier(0.22,0.61,0.36,1) forwards; }
+.canopy-svg.anim-bounce   { animation: bounce 0.7s ease forwards; }
+.canopy-svg.anim-wave     { animation: wave 1.2s ease forwards; transform-origin: bottom center; }
+.canopy-svg.anim-celebrate{ animation: celebrate 1.2s ease forwards; }
+.canopy-svg.anim-think    { animation: think 1.6s ease-in-out infinite; }
+
+.canopy-bubble.bubble-entering {
+  animation: bubble-in 0.3s ease 0.5s both;
+}
+
+/* Bubble */
+.canopy-bubble {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px 14px 14px 4px;
+  padding: 10px 13px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--slate);
+  box-shadow: 0 2px 12px rgba(29,45,61,0.1);
+  pointer-events: none;
+  max-width: calc(100% - 72px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: left bottom;
+}
+.canopy-bubble.hidden {
+  opacity: 0;
+  transform: scale(0.92) translateX(-6px);
+  pointer-events: none;
+}
+.canopy-bubble em {
+  font-style: italic;
+  color: var(--terracotta);
+}
+.canopy-bubble strong {
+  font-weight: 600;
+}
+
+/* ── BOTTOM NAV BAR ── */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--slate);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 50;
+  gap: 10px;
+}
+.nav-counter {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 300;
+  white-space: nowrap;
+}
+.btn-next {
+  background: var(--mustard);
+  color: var(--slate);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-next:active { transform: scale(0.96); background: var(--mustard-lt); }
+.btn-next:disabled { opacity: 0.4; pointer-events: none; }
+.btn-next svg { width: 14px; height: 14px; }
+
+/* ── NOTES BUTTON (bottom-right of each screen) ── */
+#notes-btn {
+  position: fixed;
+  bottom: 66px;
+  right: 16px;
+  z-index: 60;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  box-shadow: 0 2px 10px rgba(29,45,61,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+#notes-btn:active { background: var(--canvas); }
+#notes-btn svg { width: 18px; height: 18px; color: var(--slate); }
+#notes-dot {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 8px; height: 8px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  display: none;
+}
+
+/* ── NOTES OVERLAY ── */
+#notes-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--canvas);
+  z-index: 100;
+  flex-direction: column;
+}
+#notes-overlay.open { display: flex; }
+.notes-header {
+  background: var(--slate);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.notes-header h3 { color: var(--white); font-size: 16px; }
+.notes-header p { color: rgba(255,255,255,0.5); font-size: 11px; margin: 0; }
+#notes-close {
+  background: none;
+  border: none;
+  color: var(--mustard);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  padding: 6px 0 6px 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+#notes-textarea {
+  flex: 1;
+  border: none;
+  background: var(--canvas);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  padding: 18px;
+  resize: none;
+  outline: none;
+}
+.notes-footer {
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--canvas);
+  flex-shrink: 0;
+}
+.notes-hint {
+  font-size: 12px;
+  color: var(--text-soft);
+  text-align: center;
+  line-height: 1.4;
+}
+.notes-tabs-bar {
+  display: flex;
+  background: var(--slate);
+  border-bottom: 2px solid rgba(255,255,255,0.12);
+}
+.notes-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: -2px;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+}
+.notes-tab.active { color: var(--mustard); border-bottom-color: var(--mustard); }
+#notes-all-view {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--slate);
+  white-space: pre-wrap;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+.btn-back {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 60px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-back svg { width: 14px; height: 14px; }
+.btn-back:active { color: white; }
+.btn-notes-action {
+  background: var(--slate);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-notes-action.secondary {
+  background: transparent;
+  color: var(--slate);
+  border: 1.5px solid var(--border);
+}
+.btn-notes-action:active { opacity: 0.75; }
+
+/* ── CARDS & CONTENT BLOCKS ── */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.card.accent-mustard { border-left: 4px solid var(--mustard); }
+.card.accent-sage    { border-left: 4px solid var(--sage); }
+.card.accent-terra   { border-left: 4px solid var(--terracotta); }
+.card.accent-navy    { border-left: 4px solid var(--slate); background: var(--slate); }
+.card.accent-navy p, .card.accent-navy h3 { color: rgba(255,255,255,0.8); }
+.card.accent-navy .card-title { color: var(--mustard); }
+
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 6px;
+}
+
+/* Station task cards */
+.task-card {
+  background: var(--canvas);
+  border: 1.5px solid var(--mustard);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.task-card .task-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--mustard);
+  margin-bottom: 5px;
+}
+.task-card p { font-size: 14px; color: var(--text); margin: 0; }
+
+/* Org chips */
+.org-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.chip {
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--slate);
+  font-weight: 500;
+}
+
+/* Conversation prompts */
+.prompt-list { margin: 10px 0; }
+.prompt-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.prompt-item:last-child { border-bottom: none; }
+.prompt-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--mustard);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+.prompt-item p { font-size: 14px; color: var(--text); margin: 0; font-style: italic; }
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+.stat-box {
+  background: var(--slate);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.stat-num {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  color: var(--mustard);
+  display: block;
+}
+.stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+/* Five spokes */
+.spokes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+}
+.spoke-card {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.spoke-card .spoke-icon { font-size: 20px; margin-bottom: 5px; }
+.spoke-card h3 { font-size: 13px; margin-bottom: 3px; }
+.spoke-card p { font-size: 11px; color: var(--text-soft); margin: 0; line-height: 1.4; }
+.spoke-card.active-spoke { border-color: var(--mustard); background: rgba(212,180,100,0.07); }
+
+/* Cost table */
+.cost-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+.cost-table th {
+  background: var(--slate);
+  color: var(--mustard);
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.cost-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.cost-table tr:last-child td { border-bottom: none; }
+.cost-table tr:nth-child(even) td { background: rgba(124,140,116,0.05); }
+.saving-highlight { color: var(--terracotta); font-weight: 600; }
+
+/* Link blocks */
+.link-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  text-decoration: none;
+  color: var(--slate);
+  -webkit-tap-highlight-color: transparent;
+}
+.link-block:active { background: var(--canvas); }
+.link-block .link-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--mustard);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+.link-block .link-label { font-weight: 600; font-size: 14px; }
+.link-block .link-sub { font-size: 11px; color: var(--text-soft); margin-top: 1px; }
+.link-block .link-arrow { margin-left: auto; color: var(--sage); font-size: 16px; }
+
+/* Silence screen */
+.silence-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 32px;
+  gap: 20px;
+}
+.silence-icon {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--slate);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+}
+.silence-screen h1 { font-size: 22px; }
+.silence-screen p { font-size: 15px; color: var(--text-soft); }
+
+/* Programme list */
+.programme-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+.programme-item:last-child { border-bottom: none; }
+.prog-date {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: var(--terracotta);
+  min-width: 70px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.prog-label { font-size: 14px; font-weight: 500; }
+.prog-sub   { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+
+/* Values list */
+.values-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+.value-chip {
+  background: var(--slate);
+  color: var(--mustard);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* Page counter badge */
+.section-badge {
+  display: inline-block;
+  background: var(--mustard);
+  color: var(--slate);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* REVEAL silence moment */
+.reveal-wait {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+.reveal-pulse {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: var(--mustard);
+  opacity: 0;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+@keyframes pulse-ring {
+  0%   { opacity: 0; transform: scale(0.8); }
+  50%  { opacity: 0.4; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* Scrollbar hide */
+.screen-body::-webkit-scrollbar { display: none; }
+.screen-body { -ms-overflow-style: none; scrollbar-width: none; }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 0 — ARRIVAL (09:55–10:00)
+  ══════════════════════════════════════════ -->
+  <div class="screen active" id="s0" data-anim="wave" data-label="Arrival · 09:55">
+    <div class="screen-header">
+      <span class="header-tag">Share-Exchange · 11 March 2026</span>
+      <span class="header-time">09:55 – 10:00</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">Welcome</div>
+      <h1>Good morning.<br>You made it.</h1>
+      <p>This is the NCSUN Share-Exchange — a room of professionals, staff, and advocates who know this city. Today you're going to notice something together.</p>
+
+      <div class="card accent-mustard">
+        <div class="card-title">On the table</div>
+        <p style="margin:0; font-size:14px;">Two NCSUN magazines to look through and give feedback on (please do not take them away, but QR codes inside link to digital versions). A sign-in sheet, 1:1 booking cards, feedback forms, and the Radical Transparency Umbrella document. Worth a read.</p>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">This companion</div>
+        <p style="font-size:14px; margin-bottom:8px;">My name is Canopy. I'm a study partner for today — not a guide, not a schedule reminder. I'll be noticing things alongside you.</p>
+        <p style="font-size:14px; margin-bottom:8px;">Tap <strong>Next</strong> whenever you're ready to move forward. Everything on your own terms.</p>
+        <p style="font-size:13px; color:var(--text-soft); margin:0;">📝 The notepad icon (bottom-right) opens at any time — jot things down as you go.</p>
+      </div>
+
+      <div class="card accent-terra">
+        <div class="card-title">Accessibility</div>
+        <p style="font-size:14px; margin:0;">The Garden Room is ground floor. Toilets signposted. If anything feels too much, you can step out — I'll be here when you're back.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 1 — INTRO PRESENTATION (10:00)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s1" data-anim="bob" data-label="Intro Presentation · 10:00">
+    <div class="screen-header">
+      <span class="header-tag">Intro Presentation</span>
+      <span class="header-time">10:00</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">Eyes up</div>
+      <h1>Charli's starting.<br>I'll be here when the stations open.</h1>
+      <p>If you would like a bit of context while you listen, it is below. Otherwise put the phone down and pick it back up when the stations open.</p>
+
+      <div class="divider"></div>
+      <h2>About NCSUN</h2>
+      <p>Norwich Community Support Umbrella Network — a grassroots CIC registered October 2025, built on the principle that <strong>Lived Experience is Core Expertise.</strong></p>
+      <p>Operating for 19 months with no paid staff, NCSUN has reached <strong>1,673 people</strong> across Norwich and beyond through five interconnected spokes.</p>
+
+      <div class="spokes-grid">
+        <div class="spoke-card">
+          <div class="spoke-icon">⚓</div>
+          <h3>Community Anchor</h3>
+          <p>Easton Community Cupboard — trusted conversational triage</p>
+        </div>
+        <div class="spoke-card">
+          <div class="spoke-icon">📚</div>
+          <h3>LDC Centre</h3>
+          <p>Lifelong Learning, Dignified Development &amp; Co-Creation</p>
+        </div>
+        <div class="spoke-card">
+          <div class="spoke-icon">⚙️</div>
+          <h3>Connect-EnGINE</h3>
+          <p>Ethical Tech — GINE forensic intelligence engine</p>
+        </div>
+        <div class="spoke-card">
+          <div class="spoke-icon">💰</div>
+          <h3>Ethical Finance</h3>
+          <p>NIOP — Nobody Is Out Of Pocket</p>
+        </div>
+        <div class="spoke-card" style="grid-column: span 2;">
+          <div class="spoke-icon">⚖️</div>
+          <h3>Legal Integrity</h3>
+          <p>Mapping systemic legal failures — Tort of Structural Negligence</p>
+        </div>
+      </div>
+
+      <div class="card accent-navy">
+        <div class="card-title" style="color:var(--mustard);">Asset locked</div>
+        <p style="color:rgba(255,255,255,0.75); font-size:14px; margin:0;">NCSUN CIC is asset-locked to The Feed CIC. Any surplus stays in the community — permanently.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 2 — INTRODUCTIONS (10:15)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s2" data-anim="bob" data-label="Introductions · 10:15">
+    <div class="screen-header">
+      <span class="header-tag">Round the Room</span>
+      <span class="header-time">10:15</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">Right on time</div>
+      <h1>If introductions are happening, you're exactly where you should be.</h1>
+      <p>Decades of local knowledge and professional experience just introduced itself. Hold onto that thought — it'll matter later.</p>
+
+      <div class="card accent-mustard">
+        <div class="card-title">A thought while you listen</div>
+        <p style="font-size:14px; margin:0;">Notice which names you recognise. Notice which gaps surprise you. The 76-person Lived Experience Network in this room includes people who've navigated every system you work in — often all of them at once.</p>
+      </div>
+
+      <p style="font-size:13px; color:var(--text-soft);">Tap Next when introductions are wrapping up and the stations are about to open.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 3 — STATION 1: COMMUNITY ANCHOR
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s3" data-anim="think" data-label="Station 1 · Community Anchor">
+    <div class="screen-header">
+      <span class="header-tag">Station 1 · Community Anchor</span>
+      <span class="header-time">10:50 – 11:10</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 1 of 5</div>
+      <h1>Community Anchor</h1>
+      <p>A household relocates from NR3 to NR9. The informal support network that kept them stable simply stops. A geographic boundary — invisible on any service map — breaks a chain of referrals.</p>
+
+      <div class="task-card">
+        <div class="task-label">Your task at this station</div>
+        <p>Search for services that should have bridged this transition. Which organisations could have held this household across that boundary? What's missing from what you find?</p>
+      </div>
+
+      <h2>Organisations in this account</h2>
+      <div class="org-chips">
+        <span class="chip">The Feed</span>
+        <span class="chip">Norwich Foodbank</span>
+        <span class="chip">British Red Cross</span>
+        <span class="chip">Your Own Place CIC</span>
+        <span class="chip">St Giles Trust</span>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"Does your organisation have a formal boundary — and does it match the community's actual need?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What's one referral pathway you know works informally, but isn't written down anywhere?"</p>
+        </div>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">Notes sheet reminder</div>
+        <p style="font-size:14px; margin:0;">Write your commitment on the notes sheet at this station before you move on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 4 — STATION 2: ETHICAL FINANCE
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s4" data-anim="think" data-label="Station 2 · Ethical Finance">
+    <div class="screen-header">
+      <span class="header-tag">Station 2 · Ethical Finance / NIOP</span>
+      <span class="header-time">10:50 – 11:10</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 2 of 5</div>
+      <h1>Ethical Finance / NIOP</h1>
+      <p>A disabled, neurodivergent household carrying £30,000 in debt. The information was always available. The capacity to navigate it wasn't. Debt becomes £6,000 — but this is a turning point, not a resolution.</p>
+
+      <div class="task-card">
+        <div class="task-label">Your task at this station</div>
+        <p>Search for debt support and financial guidance services. What does someone actually need to make use of what you find? Information, or capacity? How many steps before first contact?</p>
+      </div>
+
+      <h2>Organisations in this account</h2>
+      <div class="org-chips">
+        <span class="chip">British Red Cross</span>
+        <span class="chip">Your Own Place CIC</span>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"How many steps does it take to access a service from your organisation on an executive-function-depleted day?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What's the difference between someone knowing support exists and being able to reach it?"</p>
+        </div>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">Notes sheet reminder</div>
+        <p style="font-size:14px; margin:0;">Write your commitment on the notes sheet at this station before you move on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 5 — STATION 3: LDC CENTRE
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s5" data-anim="think" data-label="Station 3 · LDC Centre">
+    <div class="screen-header">
+      <span class="header-tag">Station 3 · LDC Centre</span>
+      <span class="header-time">10:50 – 11:10</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 3 of 5</div>
+      <h1>LDC Centre</h1>
+      <p>A business starts in 2013. Health disruption. A restart in 2019. Lockdown. Pre-diagnosis. Across a decade of disruption and ambition, no joined-up conversation ever happened between the systems involved.</p>
+
+      <div class="task-card">
+        <div class="task-label">Your task at this station</div>
+        <p>Search for business support, enterprise development, and health-adjacent employment services. What would a joined-up timeline have looked like? What was missing at each transition point?</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What does your organisation do when someone's ambition outpaces the support available to them?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"Is there a service in this city that holds someone's whole story — not just the bit that falls into your remit?"</p>
+        </div>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">Notes sheet reminder</div>
+        <p style="font-size:14px; margin:0;">Write your commitment on the notes sheet at this station before you move on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 6 — STATION 4: LEGAL INTEGRITY
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s6" data-anim="think" data-label="Station 4 · Legal Integrity">
+    <div class="screen-header">
+      <span class="header-tag">Station 4 · Legal Integrity</span>
+      <span class="header-time">10:50 – 11:10</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 4 of 5</div>
+      <h1>Legal Integrity</h1>
+      <p>Two voices. A partner's four-year family court case, still ongoing. Running alongside it: a parallel 669-page bundle. A second hearing. No order — which was a win. Four years. No funded navigator. Two people, navigating simultaneously.</p>
+
+      <div class="task-card">
+        <div class="task-label">Your task at this station</div>
+        <p>Search for family law support, legal aid, and court navigation services. Where does the system expect a person to become their own barrister? What exists, and what doesn't?</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What happens to the people you work with when they enter a legal process? Do you follow them in?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What would a funded legal navigator for this city actually look like — and who should hold that role?"</p>
+        </div>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">Notes sheet reminder</div>
+        <p style="font-size:14px; margin:0;">Write your commitment on the notes sheet at this station before you move on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 7 — STATION 5: CONNECT-EnGINE
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s7" data-anim="think" data-label="Station 5 · Connect-EnGINE">
+    <div class="screen-header">
+      <span class="header-tag">Station 5 · Connect-EnGINE</span>
+      <span class="header-time">10:50 – 11:10</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 5 of 5</div>
+      <h1>Connect-EnGINE</h1>
+      <p>2022–2024. Two people in one household navigating welfare and employment systems at the same time. The two systems were completely invisible to each other. The household stopped turning up — to both.</p>
+
+      <div class="task-card">
+        <div class="task-label">Your task at this station</div>
+        <p>Search for welfare support and employment services simultaneously. Map what each would have known about the other. Is there any point where the two systems would have communicated — or would they have remained invisible to each other?</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"When someone stops turning up to your service — do you know why? Do you have a way to find out?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"Which service in this room today do you know the least about? What's stopped you from knowing more?"</p>
+        </div>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">Notes sheet reminder</div>
+        <p style="font-size:14px; margin:0;">Write your commitment on the notes sheet at this station before you move on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 8 — STATION 6: GINE DATABASE
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s8" data-anim="think" data-label="Station 6 · GINE Database">
+    <div class="screen-header">
+      <span class="header-tag">Station 6 · GINE Database</span>
+      <span class="header-time">11:10 – 11:25</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="section-badge">Station 6 — collective</div>
+      <h1>GINE Database</h1>
+      <p>This station is different. There's no individual case study here. This is collective intelligence — built by and for this city.</p>
+
+      <div class="card accent-mustard">
+        <div class="card-title">What's happening at this station</div>
+        <p style="font-size:14px; margin-bottom:8px;">The GINE Master Log currently holds <strong>423 rows across 8 Norwich wards</strong>. It's the most comprehensive live database of community services in the area — built entirely from lived experience and professional knowledge.</p>
+        <p style="font-size:14px; margin:0;">Check the printed list. Use the sticky notes on the board to add services that aren't on it. Every addition is intelligence. Every gap you name matters.</p>
+      </div>
+
+      <a class="link-block" href="https://ncsun-cic.netlify.app" target="_blank" rel="noopener">
+        <div class="link-icon">🔗</div>
+        <div>
+          <div class="link-label">GINE Live Database</div>
+          <div class="link-sub">ncsun-cic.netlify.app</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+
+      <div class="divider"></div>
+      <h2>Conversation prompts</h2>
+      <div class="prompt-list">
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"What's a service you know works — that most people in this room probably don't know about?"</p>
+        </div>
+        <div class="prompt-item">
+          <div class="prompt-icon">💬</div>
+          <p>"If this database were shared with every GP, social worker, and housing officer in Norwich — what would change?"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 9 — REVEAL SILENCE MOMENT (11:25)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s9" data-anim="bob" data-label="Reveal · 11:25">
+    <div class="screen-header">
+      <span class="header-tag">11:25</span>
+      <span class="header-time"></span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="reveal-wait">
+        <div class="reveal-pulse"></div>
+        <h1 style="font-size:24px;">Put the phone down.</h1>
+        <p style="font-size:16px; max-width:280px;">Something is about to happen in the room.</p>
+        <p style="font-size:13px; color:var(--text-soft);">Tap Next only after the moment has passed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 10 — POST-REVEAL PRESENTATION (11:35)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s10" data-anim="celebrate" data-label="Post-Reveal · 11:35">
+    <div class="screen-header">
+      <span class="header-tag">Post-Reveal</span>
+      <span class="header-time">11:35</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">What you just witnessed</div>
+      <h1>This is what the data looks like when it's working.</h1>
+      <p>19 months. No paid staff. 1,673 people. What you searched for today is a map of what this city needs — and what it's missing.</p>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-num">1,673</span>
+          <div class="stat-label">People reached since July 2024</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">1,225</span>
+          <div class="stat-label">ECC visitors — Easton Community Cupboard</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">76</span>
+          <div class="stat-label">Members of the Lived Experience Network</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">423</span>
+          <div class="stat-label">GINE database rows across 8 wards</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>The Five Spokes</h2>
+      <p>Every station you visited today is a spoke. Together they form the network — not as separate services, but as one continuous conversation.</p>
+
+      <div class="spokes-grid">
+        <div class="spoke-card active-spoke">
+          <div class="spoke-icon">⚓</div>
+          <h3>Community Anchor</h3>
+          <p>Trusted conversational triage. City-wide linking database.</p>
+        </div>
+        <div class="spoke-card active-spoke">
+          <div class="spoke-icon">📚</div>
+          <h3>LDC Centre</h3>
+          <p>Lifelong Learning, Dignified Development &amp; Co-Creation.</p>
+        </div>
+        <div class="spoke-card active-spoke">
+          <div class="spoke-icon">⚙️</div>
+          <h3>Connect-EnGINE</h3>
+          <p>Neuro-affirming tech. GINE forensic intelligence engine.</p>
+        </div>
+        <div class="spoke-card active-spoke">
+          <div class="spoke-icon">💰</div>
+          <h3>Ethical Finance</h3>
+          <p>NIOP — Nobody Is Out Of Pocket. Cyclical grant bidding.</p>
+        </div>
+        <div class="spoke-card active-spoke" style="grid-column:span 2;">
+          <div class="spoke-icon">⚖️</div>
+          <h3>Legal Integrity</h3>
+          <p>Anchoring legal policy in the expertise of lived experience. Tort of Structural Negligence.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Campus of Care</h2>
+      <div class="card accent-navy">
+        <p style="color:rgba(255,255,255,0.85); font-size:15px; margin-bottom:8px; font-style:italic;">"One front door. One conversation. Every door opened."</p>
+        <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">A permanent physical space where every spoke has a home. Community-owned. Asset-locked. Built from what this city already knows.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Our values</h2>
+      <div class="values-row">
+        <span class="value-chip">Dignity</span>
+        <span class="value-chip">Equity</span>
+        <span class="value-chip">Transparency</span>
+        <span class="value-chip">Accessibility</span>
+        <span class="value-chip">Accountability</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 11 — OPEN DISCUSSION / SHARE-EXCHANGE (12:00)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s11" data-anim="celebrate" data-label="Mustard Power Exchange">
+  <div class="screen-header">
+    <span class="header-label">Mustard Power Exchange</span>
+    <span class="header-time">12:00</span>
+  </div>
+  <div class="screen-body">
+    <p class="eyebrow">You have seen the gaps. Now let's close them.</p>
+    <h1>Three questions for the room.</h1>
+    <p>What you share right now goes into the record. This is the intelligence.</p>
+    <div class="card" style="border-left:4px solid var(--terracotta);padding:14px 16px;margin-bottom:10px;">
+      <p style="font-weight:700;margin:0;">1. At your station: who should have been there, and was not?</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--sage);padding:14px 16px;margin-bottom:10px;">
+      <p style="font-weight:700;margin:0;">2. What does your organisation hold that could reach further if the right connection existed?</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--mustard);padding:14px 16px;margin-bottom:16px;">
+      <p style="font-weight:700;margin:0;">3. What would you need to see to bring your director to the next one?</p>
+    </div>
+    <div class="card">
+      <p class="card-title" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;opacity:.6;margin-bottom:8px;">Save the date</p>
+      <p style="font-size:14px;margin-bottom:4px;"><strong>Community Collective #2</strong> &#8212; 11 April 2026, Norwich City ABC</p>
+      <p style="font-size:14px;margin-bottom:4px;"><strong>Mustard Share Exchange #2</strong> &#8212; 11 May 2026 (provisional)</p>
+      <p style="font-size:14px;margin:0;"><strong>Quarterly Round Table</strong> &#8212; January 2027, including first discussions on a Poverty Truth Norwich Commission.</p>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s12" data-anim="bob" data-label="Lunch · 12:30">
+    <div class="screen-header">
+      <span class="header-tag">Lunch</span>
+      <span class="header-time">12:30</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">Take a breath</div>
+      <h1>You've done a lot of thinking today.</h1>
+      <p>The morning was intentional. The afternoon has something specific you'll want to see — a financial case for what all of this actually costs, and what it doesn't have to.</p>
+
+      <div class="card accent-sage">
+        <p style="font-size:14px; margin:0;">Eat, talk, step outside if you need to. The cost analysis starts at 1pm. It won't take long and it makes everything concrete.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 13 — COST ANALYSIS + VISION (13:00)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s13" data-anim="bob" data-label="Cost Analysis · 13:00">
+    <div class="screen-header">
+      <span class="header-tag">Cost Analysis &amp; Vision</span>
+      <span class="header-time">13:00</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">The numbers</div>
+      <h1>What outreach actually costs — and what it doesn't have to.</h1>
+      <p>The NLE Network Magazine consolidates outreach across multiple organisations: shared production costs, greater reach, zero duplication.</p>
+
+      <div class="card accent-mustard">
+        <div class="card-title">The Anchor Effect</div>
+        <p style="font-size:14px; margin:0;">A reader seeking food support is simultaneously informed about legal, health, and financial services. One magazine. Multiple doors.</p>
+      </div>
+
+      <h2 style="margin-top:16px;">Magazine vs. individual outreach</h2>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Organisation type</th>
+            <th>Individual cost</th>
+            <th>NLE annual rate</th>
+            <th>Saving</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Micro-CIC</td>
+            <td>£750</td>
+            <td>£100</td>
+            <td class="saving-highlight">86.6%</td>
+          </tr>
+          <tr>
+            <td>Small Charity</td>
+            <td>£1,500</td>
+            <td>£200</td>
+            <td class="saving-highlight">86.6%</td>
+          </tr>
+          <tr>
+            <td>Medium Social Enterprise</td>
+            <td>£3,000</td>
+            <td>£300</td>
+            <td class="saving-highlight">90%</td>
+          </tr>
+          <tr>
+            <td>Large / Regional</td>
+            <td>£8,000+</td>
+            <td>£400</td>
+            <td class="saving-highlight">95%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card accent-terra" style="margin-top:8px;">
+        <div class="card-title">Two magazines in your hand</div>
+        <p style="font-size:14px; margin:0;">The Norwich Community Anchor (free, community-facing) and the NLE Network Magazine (£1, professional edition) are both on the table. The Anchor reaches people. The Network connects the people who serve them.</p>
+      </div>
+
+      <div class="divider"></div>
+      <h2>Vision 2027+</h2>
+      <div class="card accent-navy">
+        <p style="color:rgba(255,255,255,0.85); font-size:15px; margin-bottom:8px; font-style:italic;">"Campus of Care — permanent. Asset-locked. Community-owned."</p>
+        <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">Every spoke with a physical home. Every conversation joined up. Every person who walks through the door, followed through — not handed off.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 14 — CLOSE (13:35)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="s14" data-anim="celebrate" data-label="Close · 13:35">
+    <div class="screen-header">
+      <span class="header-tag">Close</span>
+      <span class="header-time">13:35</span>
+    </div>
+    <div class="mustard-rule"></div>
+    <div class="screen-body">
+      <div class="eyebrow">Thank you for being here</div>
+      <h1>You were part of something real today.</h1>
+      <p>What you searched for, noticed, wrote down, and said out loud is intelligence. It belongs in the record.</p>
+
+      <h2>Before you go</h2>
+
+      <div class="card accent-mustard">
+        <div class="card-title">Feedback form</div>
+        <p style="font-size:14px; margin-bottom:10px;">Three questions. Name optional. Takes two minutes and genuinely shapes the next event.</p>
+        <a href="https://forms.gle/dBeb3DoMsmrVB2HJA" target="_blank" rel="noopener" style="display:inline-block; background:var(--slate); color:var(--mustard); padding:9px 18px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:600;">Open feedback form →</a>
+      </div>
+
+      <div class="card accent-sage">
+        <div class="card-title">1:1 booking cards</div>
+        <p style="font-size:14px; margin:0;">If you'd like a follow-up conversation with Charli, the cards are still on the table. We'll be in touch.</p>
+      </div>
+
+      <a class="link-block" href="https://ncsun.org" target="_blank" rel="noopener">
+        <div class="link-icon">🌐</div>
+        <div>
+          <div class="link-label">ncsun.org</div>
+          <div class="link-sub">Our current website</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+
+      <a class="link-block" href="https://williamr406.sg-host.com/" target="_blank" rel="noopener">
+        <div class="link-icon">🔧</div>
+        <div>
+          <div class="link-label">New website preview</div>
+          <div class="link-sub">Compare the two — what would you want to see?</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+
+      <div class="divider"></div>
+      <h2>What's next</h2>
+      <div class="programme-item">
+        <div class="prog-date">May 2026</div>
+        <div>
+          <div class="prog-label">Community Collective</div>
+          <div class="prog-sub">Open community event</div>
+        </div>
+      </div>
+      <div class="programme-item">
+        <div class="prog-date">Jul 2026</div>
+        <div>
+          <div class="prog-label">Professional Share-Exchange</div>
+          <div class="prog-sub">Second in this series</div>
+        </div>
+      </div>
+      <div class="programme-item">
+        <div class="prog-date">Sep 2026</div>
+        <div>
+          <div class="prog-label">Community Collective</div>
+        </div>
+      </div>
+      <div class="programme-item">
+        <div class="prog-date">Nov 2026</div>
+        <div>
+          <div class="prog-label">Professional Share-Exchange</div>
+        </div>
+      </div>
+      <div class="programme-item">
+        <div class="prog-date">Jan 2027</div>
+        <div>
+          <div class="prog-label">First Quarterly Round Table</div>
+          <div class="prog-sub">Alice Macdonald MP interest noted</div>
+        </div>
+      </div>
+
+      <div class="card accent-terra" style="margin-top:16px;">
+        <div class="card-title">Stay connected</div>
+        <p style="font-size:14px; margin-bottom:6px;">Monthly Pulse membership: <strong>£1/month</strong> — keeps you informed as the intelligence builds.</p>
+        <a href="https://ncsun.org" target="_blank" rel="noopener" style="font-size:13px; color:var(--terracotta); font-weight:600;">ncsun.org</a>
+      </div>
+
+      <div class="divider"></div>
+      <p style="font-size:13px; color:var(--text-soft); text-align:center;">NCSUN CIC · Reg. No: 16798972<br>charli@ncsun.org · ncsun.org</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CANOPY CHARACTER (fixed, every screen)
+  ══════════════════════════════════════════ -->
+  <div class="canopy-row" id="canopy-row">
+    <div class="canopy-wrap">
+      <!-- SVG Canopy umbrella character -->
+      <svg class="canopy-svg anim-bob" id="canopy-svg" viewBox="0 0 48 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Canopy arc (umbrella top) -->
+        <path d="M4 26 Q4 8 24 8 Q44 8 44 26 Z" fill="#D4B464" stroke="#4A6580" stroke-width="1.5"/>
+        <!-- Umbrella ribs -->
+        <line x1="24" y1="8" x2="24" y2="26" stroke="#4A6580" stroke-width="0.8" opacity="0.4"/>
+        <line x1="24" y1="8" x2="8" y2="24" stroke="#4A6580" stroke-width="0.8" opacity="0.4"/>
+        <line x1="24" y1="8" x2="40" y2="24" stroke="#4A6580" stroke-width="0.8" opacity="0.4"/>
+        <!-- Face area (under canopy) -->
+        <rect x="16" y="22" width="16" height="12" rx="6" fill="#F8F7F2" stroke="#4A6580" stroke-width="1.2"/>
+        <!-- Eyes -->
+        <circle cx="20.5" cy="27" r="1.4" fill="#4A6580"/>
+        <circle cx="27.5" cy="27" r="1.4" fill="#4A6580"/>
+        <!-- Smile -->
+        <path d="M21 30.5 Q24 33 27 30.5" stroke="#4A6580" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <!-- Handle -->
+        <line x1="24" y1="26" x2="24" y2="46" stroke="#4A6580" stroke-width="2" stroke-linecap="round"/>
+        <path d="M24 46 Q24 52 20 52 Q16 52 16 48" stroke="#4A6580" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- Little legs -->
+        <line x1="20" y1="40" x2="17" y2="48" stroke="#4A6580" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="28" y1="40" x2="31" y2="48" stroke="#4A6580" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Feet -->
+        <line x1="17" y1="48" x2="14" y2="50" stroke="#4A6580" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="31" y1="48" x2="34" y2="50" stroke="#4A6580" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="canopy-bubble" id="canopy-bubble">
+      Welcome — I'm Canopy. I'll be here all day. Tap <strong>Next</strong> whenever you're ready.
+    </div>
+  </div>
+
+  <!-- ── BOTTOM BAR ── -->
+  <div class="bottom-bar">
+    <button class="btn-back" id="btn-back" aria-label="Go back" style="visibility:hidden;">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9,2 4,7 9,12"/></svg>
+      Back
+    </button>
+    <span class="nav-counter" id="nav-counter">1 / 15</span>
+    <button class="btn-next" id="btn-next" aria-label="Next section">
+      Next
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,2 10,7 5,12"/></svg>
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<button id="notes-btn" aria-label="Open notes">
+  <div id="notes-dot"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+  </svg>
+</button>
+
+<div id="notes-overlay" role="dialog" aria-modal="true" aria-label="Your notes">
+  <div class="notes-header">
+    <div>
+      <h3>Your notes</h3>
+      <p id="notes-section-label">This section</p>
+    </div>
+    <button id="notes-close">Done</button>
+  </div>
+  <div class="notes-tabs-bar">
+    <button class="notes-tab active" id="tab-current">This section</button>
+    <button class="notes-tab" id="tab-all">All notes</button>
+  </div>
+  <textarea id="notes-textarea"
+    placeholder="Write anything here — what you found, gaps you noticed, things to follow up..."
+    aria-label="Notes textarea"
+    autocorrect="on"
+    spellcheck="true"></textarea>
+  <div id="notes-all-view"></div>
+  <div class="notes-footer">
+    <p class="notes-hint">Notes save as you type. Tap <strong>All notes</strong> to see everything. Use <strong>Copy all</strong> before you leave.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-notes-action" id="btn-copy-all">Copy all notes</button>
+      <button class="btn-notes-action secondary" id="notes-clear-btn">Clear this section</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SCREEN DATA ──
+// Each entry: { id, bubble, anim }
+const SCREENS = [
+  { id:'s0',  anim:'wave',     bubble:"Welcome — I'm Canopy. I'll be here all day. Tap <strong>Next</strong> whenever you're ready." },
+  { id:'s1',  anim:'bob',      bubble:"Eyes up — Charli's starting. I'll be right here when the stations open." },
+  { id:'s2',  anim:'bob',      bubble:"If introductions are happening, you're right on time." },
+  { id:'s3',  anim:'think',    bubble:"Station 1. A geographic boundary that nobody drew on purpose — but everyone felt." },
+  { id:'s4',  anim:'think',    bubble:"Station 2. The information was there. The capacity to use it wasn't. That's the gap." },
+  { id:'s5',  anim:'think',    bubble:"Station 3. A decade of disruption and ambition — and no joined-up conversation across any of it." },
+  { id:'s6',  anim:'think',    bubble:"Station 4. Two people, two cases, four years, 669 pages. No navigator. Let that land." },
+  { id:'s7',  anim:'think',    bubble:"Station 5. Two systems in one household, invisible to each other. Until the household disappeared." },
+  { id:'s8',  anim:'think',    bubble:"Station 6. This one belongs to all of you. What's missing from the list? Add it." },
+  { id:'s9',  anim:'bob',      bubble:"Put the phone down. Something is about to happen in the room." },
+  { id:'s10', anim:'celebrate',bubble:"<em>There it is.</em> That's what lived experience as data looks like." },
+  { id:'s11', anim:'bob',      bubble:"You belong in this conversation. What you know matters — and this room can hold it." },
+  { id:'s12', anim:'bob',      bubble:"Take a breath. The afternoon has a financial case you'll want to see." },
+  { id:'s13', anim:'bob',      bubble:"These aren't projections — they're what it actually costs. And what it doesn't have to." },
+  { id:'s14', anim:'celebrate',bubble:"<em>Thank you.</em> You were part of something real today. That doesn't disappear." },
+];
+
+let currentIdx = 0;
+let bubbleVisible = true;
+
+// ── NOTES STORAGE (in-memory, no localStorage) ──
+// TODO post-event: pre-populate feedback form from notes object
+const notesStore = {};
+let currentSectionLabel = 'Arrival';
+
+function getNotesKey() { return SCREENS[currentIdx].id; }
+function getCurrentNotes() { return notesStore[getNotesKey()] || ''; }
+function setCurrentNotes(val) {
+  notesStore[getNotesKey()] = val;
+  document.getElementById('notes-dot').style.display =
+    Object.values(notesStore).some(v => v.trim()) ? 'block' : 'none';
+}
+
+// ── NAVIGATION ──
+function goTo(idx) {
+  if (idx < 0 || idx >= SCREENS.length) return;
+  // Save current notes before leaving
+  var ta = document.getElementById('notes-textarea');
+  if (ta) setCurrentNotes(ta.value);
+
+  const prev = document.getElementById(SCREENS[currentIdx].id);
+  const next = document.getElementById(SCREENS[idx].id);
+  if (!next) return;
+
+  prev.classList.remove('active');
+  next.classList.add('active');
+  currentIdx = idx;
+
+  // Update Canopy
+  const sc = SCREENS[idx];
+  updateCanopy(sc.bubble, sc.anim);
+
+  // Update counter
+  document.getElementById('nav-counter').textContent = `${idx + 1} / ${SCREENS.length}`;
+
+  // Update buttons
+  const btnNext = document.getElementById('btn-next');
+  const btnBack = document.getElementById('btn-back');
+  btnNext.disabled = idx >= SCREENS.length - 1;
+  btnNext.innerHTML = idx >= SCREENS.length - 1 ? 'Done' : 'Next <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5,2 10,7 5,12"/></svg>';
+  btnBack.style.visibility = idx === 0 ? 'hidden' : 'visible';
+
+  // Update notes label
+  currentSectionLabel = next.dataset.label || sc.id;
+  document.getElementById('notes-section-label').textContent = currentSectionLabel;
+
+  // Scroll to top
+  const body = next.querySelector('.screen-body');
+  if (body) body.scrollTop = 0;
+}
+
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (currentIdx < SCREENS.length - 1) goTo(currentIdx + 1);
+});
+
+document.getElementById('btn-back').addEventListener('click', () => {
+  if (currentIdx > 0) goTo(currentIdx - 1);
+});
+
+// ── CANOPY ──
+function updateCanopy(bubble, anim) {
+  const svg = document.getElementById('canopy-svg');
+  const bub = document.getElementById('canopy-bubble');
+
+  // Clear all animation classes, reset position
+  svg.className = 'canopy-svg';
+
+  // Set bubble with entrance animation
+  bub.innerHTML = bubble;
+  bub.classList.remove('bubble-entering');
+  void bub.offsetWidth; // reflow
+  bub.classList.add('bubble-entering');
+
+  // Always hop in first on screen change
+  requestAnimationFrame(() => {
+    svg.classList.add('anim-hop-in');
+
+    // Bubble re-appears with each new screen
+    bubbleVisible = true;
+    bub.classList.remove('hidden');
+
+    // After hop lands (750ms), transition to the screen's idle anim
+    setTimeout(() => {
+      svg.className = 'canopy-svg';
+      requestAnimationFrame(() => {
+        // One-shot anims (wave, celebrate) play once then settle to bob
+        if (anim === 'wave' || anim === 'celebrate') {
+          svg.classList.add('anim-' + anim);
+          const dur = 1300;
+          setTimeout(() => { svg.className = 'canopy-svg anim-bob'; }, dur);
+        } else if (anim === 'think') {
+          svg.classList.add('anim-think');
+        } else {
+          svg.classList.add('anim-bob');
+        }
+      });
+    }, 780);
+  });
+}
+
+// ── NOTES ──
+const notesBtn     = document.getElementById('notes-btn');
+const notesOverlay = document.getElementById('notes-overlay');
+const notesTA      = document.getElementById('notes-textarea');
+const notesClose   = document.getElementById('notes-close');
+const notesAllView = document.getElementById('notes-all-view');
+const tabCurrent   = document.getElementById('tab-current');
+const tabAll       = document.getElementById('tab-all');
+
+function openOverlay() {
+  notesTA.value = getCurrentNotes();
+  document.getElementById('notes-section-label').textContent = currentSectionLabel;
+  // ensure current tab is shown
+  notesTA.style.display = '';
+  notesAllView.style.display = 'none';
+  tabCurrent.classList.add('active');
+  tabAll.classList.remove('active');
+  notesOverlay.classList.add('open');
+  setTimeout(function() { notesTA.focus(); }, 80);
+}
+
+function closeOverlay() {
+  setCurrentNotes(notesTA.value);
+  notesOverlay.classList.remove('open');
+  notesTA.blur();
+}
+
+notesBtn.addEventListener('click', openOverlay);
+notesClose.addEventListener('click', closeOverlay);
+notesOverlay.addEventListener('click', function(e) {
+  if (e.target === notesOverlay) closeOverlay();
+});
+
+tabCurrent.addEventListener('click', function() {
+  notesTA.style.display = '';
+  notesAllView.style.display = 'none';
+  tabCurrent.classList.add('active');
+  tabAll.classList.remove('active');
+  setTimeout(function() { notesTA.focus(); }, 80);
+});
+
+tabAll.addEventListener('click', function() {
+  notesTA.style.display = 'none';
+  notesAllView.style.display = 'block';
+  tabCurrent.classList.remove('active');
+  tabAll.classList.add('active');
+  var parts = [];
+  for (var i = 0; i < SCREENS.length; i++) {
+    var v = (notesStore[SCREENS[i].id] || '').trim();
+    if (v) parts.push((SCREENS[i].label || SCREENS[i].id) + ':\n' + v);
+  }
+  notesAllView.textContent = parts.length ? parts.join('\n\n') : 'No notes yet.';
+});
+
+notesTA.addEventListener('input', function() {
+  setCurrentNotes(notesTA.value);
+});
+
+document.getElementById('notes-clear-btn').addEventListener('click', function() {
+  if (confirm('Clear notes for this section?')) {
+    notesTA.value = '';
+    setCurrentNotes('');
+  }
+});
+
+document.getElementById('btn-copy-all').addEventListener('click', function() {
+  var parts = [];
+  for (var i = 0; i < SCREENS.length; i++) {
+    var v = (notesStore[SCREENS[i].id] || '').trim();
+    if (v) parts.push((SCREENS[i].label || SCREENS[i].id) + ':\n' + v);
+  }
+  var text = parts.join('\n\n');
+  if (!text) { this.textContent = 'Nothing yet'; setTimeout(function() { document.getElementById('btn-copy-all').textContent = 'Copy all notes'; }, 1800); return; }
+  var self = this;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      self.textContent = 'Copied!';
+      setTimeout(function() { self.textContent = 'Copy all notes'; }, 2200);
+    }).catch(function() { self.textContent = 'Select text above'; });
+  } else {
+    notesTA.value = text;
+    notesTA.style.display = '';
+    notesTA.select();
+    try { document.execCommand('copy'); self.textContent = 'Copied!'; } catch(e) { self.textContent = 'Select & copy'; }
+    setTimeout(function() { self.textContent = 'Copy all notes'; }, 2200);
+  }
+});
+
+// ── CANOPY BUBBLE TOGGLE ──
+document.querySelector('.canopy-wrap').addEventListener('click', () => {
+  const bub = document.getElementById('canopy-bubble');
+  bubbleVisible = !bubbleVisible;
+  if (bubbleVisible) {
+    bub.classList.remove('hidden');
+  } else {
+    bub.classList.add('hidden');
+  }
+});
+
+// ── INIT ──
+goTo(0);
+document.getElementById('btn-next').disabled = false;
+document.getElementById('btn-back').style.visibility = 'hidden';
+</script>
+</body>
+</html>
