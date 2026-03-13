@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NCSUN · What We Are Building · March 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+:root {
+  --navy:    #4A6580;
+  --canvas:  #F8F7F2;
+  --sage:    #7C8C74;
+  --terra:   #A64D3D;
+  --mustard: #D4B464;
+  --ink:     #2C3E50;
+  --light:   #EEEADE;
+  --border:  rgba(74,101,128,0.12);
+  --serif:   'Playfair Display', Georgia, serif;
+  --sans:    'Source Sans 3', Arial, sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--canvas);color:var(--ink);font-size:17px;line-height:1.75;}
+.reading-bar{background:var(--navy);color:rgba(255,255,255,0.7);text-align:center;padding:10px 1rem;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;}
+.reading-bar em{color:var(--mustard);font-style:normal;}
+nav{position:sticky;top:0;background:var(--navy);z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;border-bottom:3px solid var(--mustard);}
+nav ul{display:inline-flex;list-style:none;padding:0 1rem;}
+nav a{display:flex;align-items:center;padding:14px 15px;color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-bottom:3px solid transparent;margin-bottom:-3px;transition:color 0.2s,border-color 0.2s;min-height:52px;}
+nav a:hover{color:#fff;border-bottom-color:var(--mustard);}
+#cover{background:var(--navy);color:#fff;padding:5rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden;}
+#cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(212,180,100,0.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(124,140,116,0.06) 0%,transparent 50%);pointer-events:none;}
+.cover-label{font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--mustard);font-weight:700;margin-bottom:2rem;}
+.cover-title{font-family:var(--serif);font-size:clamp(2.6rem,7vw,4.4rem);font-weight:900;line-height:1.1;color:#fff;margin-bottom:1.5rem;position:relative;}
+.cover-title em{color:var(--mustard);font-style:italic;}
+.cover-body{font-size:1.05rem;color:rgba(255,255,255,0.65);max-width:540px;margin:0 auto 2.5rem;line-height:1.7;}
+.cover-rule{width:60px;height:3px;background:var(--mustard);margin:0 auto;}
+.cover-meta{margin-top:2rem;font-size:0.78rem;color:rgba(255,255,255,0.35);letter-spacing:0.08em;}
+.section{max-width:700px;margin:0 auto;padding:5rem 1.5rem;border-bottom:1px solid var(--border);}
+.section:last-of-type{border-bottom:none;}
+.section-label{font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--terra);margin-bottom:1rem;}
+h2{font-family:var(--serif);font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:1.5rem;}
+h2 em{color:var(--mustard);font-style:italic;}
+h3{font-family:var(--serif);font-size:1.15rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem;}
+p{margin-bottom:1.1rem;color:var(--ink);}
+p:last-child{margin-bottom:0;}
+.lead{font-size:1.12rem;line-height:1.8;color:var(--navy);font-weight:300;margin-bottom:1.5rem;}
+.italic-note{font-style:italic;color:var(--sage);font-size:0.95rem;}
+.pull-quote{border-left:4px solid var(--mustard);padding:1.25rem 1.75rem;margin:2.5rem 0;background:rgba(212,180,100,0.06);}
+.pull-quote p{font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--navy);margin:0;line-height:1.6;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:2.5rem 0;}
+.stat{background:var(--canvas);padding:1.5rem 1rem;text-align:center;}
+.stat-number{display:block;font-family:var(--serif);font-size:2.2rem;font-weight:900;color:var(--navy);line-height:1;margin-bottom:0.4rem;}
+.stat-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);}
+.callout{background:var(--light);border-top:3px solid var(--navy);padding:1.5rem 1.75rem;margin:2rem 0;}
+.callout.mustard{border-top-color:var(--mustard);}
+.callout.terra{border-top-color:var(--terra);}
+.callout.sage{border-top-color:var(--sage);}
+.callout h3{margin-bottom:0.75rem;}
+.spokes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:2rem 0;}
+.spoke-card{background:var(--canvas);padding:1.25rem 1.1rem;}
+.spoke-name{font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:0.3rem;}
+.spoke-value{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;}
+.spoke-desc{font-size:0.78rem;color:var(--sage);line-height:1.5;}
+.charli-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:2rem 0;}
+.charli-spoke{background:var(--canvas);padding:1.25rem 1.1rem;}
+.charli-letter{font-family:var(--serif);font-size:2.4rem;font-weight:900;color:var(--mustard);line-height:1;margin-bottom:0.3rem;}
+.charli-name{font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:0.3rem;}
+.charli-theme{font-size:0.78rem;color:var(--sage);line-height:1.5;}
+.tools-list{margin:2rem 0;}
+.tool-item{border-bottom:1px solid var(--border);padding:1.5rem 0;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start;}
+.tool-item:first-child{border-top:1px solid var(--border);}
+.tool-name{font-weight:700;color:var(--navy);font-size:1rem;margin-bottom:0.3rem;}
+.tool-why{font-size:0.9rem;color:#555;line-height:1.65;margin:0;}
+.tool-link{display:inline-flex;align-items:center;padding:0.55rem 1rem;background:var(--navy);color:#fff;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-decoration:none;text-transform:uppercase;white-space:nowrap;min-height:44px;transition:background 0.2s;flex-shrink:0;}
+.tool-link:hover{background:var(--terra);}
+.tool-link.sage{background:var(--sage);}
+.tool-link.mustard{background:var(--mustard);color:var(--navy);}
+.tool-link.terra{background:var(--terra);}
+.dates-list{margin:2rem 0;}
+.date-row{display:flex;gap:1.5rem;padding:1rem 0;border-bottom:1px solid var(--border);align-items:baseline;}
+.date-row:first-child{border-top:1px solid var(--border);}
+.date-tag{font-family:var(--serif);font-size:0.85rem;font-weight:700;color:var(--mustard);white-space:nowrap;min-width:90px;}
+.date-label{font-size:0.95rem;color:var(--ink);}
+.date-label strong{color:var(--navy);}
+.links-block{background:var(--navy);padding:2.5rem 2rem;margin:2.5rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;}
+.link-item a{color:var(--mustard);font-weight:700;font-size:0.9rem;text-decoration:none;display:block;margin-bottom:0.3rem;}
+.link-item a:hover{text-decoration:underline;}
+.link-item span{font-size:0.78rem;color:rgba(255,255,255,0.45);display:block;}
+.btn-row{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2rem;}
+.btn{display:inline-flex;align-items:center;padding:0.9rem 2rem;font-family:var(--sans);font-weight:700;font-size:0.9rem;text-decoration:none;min-height:52px;transition:background 0.2s,color 0.2s;letter-spacing:0.04em;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--terra);}
+.btn-secondary{background:transparent;color:var(--navy);border:2px solid var(--navy);}
+.btn-secondary:hover{background:var(--navy);color:#fff;}
+.btn-mustard{background:var(--mustard);color:var(--navy);}
+.btn-mustard:hover{background:var(--terra);color:#fff;}
+footer{background:var(--navy);color:rgba(255,255,255,0.55);padding:3rem 1.5rem;text-align:center;font-size:0.82rem;line-height:2;}
+footer a{color:var(--mustard);text-decoration:none;}
+footer strong{color:#fff;}
+.footer-rule{width:40px;height:2px;background:var(--mustard);margin:1.5rem auto;}
+@media(max-width:600px){
+  .section{padding:3.5rem 1.2rem;}
+  #cover{padding:4rem 1.2rem 3.5rem;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .tool-item{grid-template-columns:1fr;}
+  .tool-link{width:fit-content;}
+  .links-block{padding:2rem 1.25rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="reading-bar">This will take about <em>15 minutes</em> to read. It is worth it.</div>
+
+<nav aria-label="Sections">
+  <ul>
+    <li><a href="#what">What NCSUN is</a></li>
+    <li><a href="#reveal">The reveal</a></li>
+    <li><a href="#data">The data</a></li>
+    <li><a href="#tools">Live tools</a></li>
+    <li><a href="#links">All links</a></li>
+    <li><a href="#next">What's next</a></li>
+    <li><a href="#contact">Get in touch</a></li>
+  </ul>
+</nav>
+
+<section id="cover">
+  <div class="cover-label">NCSUN CIC &middot; March 2026</div>
+  <h1 class="cover-title">What we are<br/><em>building.</em></h1>
+  <p class="cover-body">Twenty months. Zero paid staff. 1,673 people reached. This document is everything you need to understand what NCSUN is, what it has already done, and why it matters.</p>
+  <div class="cover-rule"></div>
+  <p class="cover-meta">NCSUN CIC &middot; Company No. 16798972 &middot; Asset locked to The Feed CIC</p>
+</section>
+
+<section class="section" id="what">
+  <div class="section-label">Who we are</div>
+  <h2>Not a charity. Not a referral service. <em>Something new.</em></h2>
+  <p class="lead">NCSUN &mdash; Norwich Community Support Umbrella Network &mdash; is a Community Interest Company built on one founding principle: lived experience is core expertise. Not a consultation tick-box. Not a framing device. The actual operational and evidential foundation of everything we do.</p>
+  <p>We sit in the connected space between services. We are not here to replicate what already exists. We are here because the people closest to system failure have never been formally asked to help fix it &mdash; and because that failure has a cost that nobody is currently measuring properly.</p>
+  <p>We started with a community food cupboard, a question nobody was answering, and a methodology that says the people who have navigated the hardest parts of the system are the most qualified people to map it. Twenty months later, that methodology has produced a body of evidence that is now ready to share.</p>
+  <div class="pull-quote">
+    <p>"There is nothing that connects all of it. People in crisis don't have the ability or mental capacity to stay on the phone for three hours trying to get through to one contact. We take that pressure off."</p>
+  </div>
+  <div class="callout">
+    <h3>Five principles. One organisation.</h3>
+    <p style="font-size:0.9rem;color:#555;margin-bottom:1.25rem;">Each principle addresses a gap that kept appearing in the intelligence gathered from communities. None of them were invented in a boardroom. All of them were identified by the people who needed them.</p>
+    <div class="spokes-grid">
+      <div class="spoke-card">
+        <div class="spoke-name">Community Anchor</div>
+        <div class="spoke-value" style="color:var(--terra);">Dignity</div>
+        <div class="spoke-desc">No one should fall through the gap between services. NCSUN sits in the connective space between residents and the support that exists, making sure people arrive at the right place without having to tell their story more than once.</div>
+      </div>
+      <div class="spoke-card">
+        <div class="spoke-name">LDC Centre</div>
+        <div class="spoke-value" style="color:var(--sage);">Equity</div>
+        <div class="spoke-desc">Lived experience is a professional qualification. People who have navigated broken systems hold knowledge that cannot be learned in a classroom, and that knowledge deserves structured development, recognition, and fair pay.</div>
+      </div>
+      <div class="spoke-card">
+        <div class="spoke-name">Ethical Technology</div>
+        <div class="spoke-value" style="color:var(--mustard);">Accessibility</div>
+        <div class="spoke-desc">Technology must serve people, not extract from them. Any tool NCSUN uses must be ethical by design, human-led, and fully transparent. Connect-EnGINE is the operational expression of this principle, built to the DMCPL standard &mdash; Designing everything we do to be easily understandable, even on the hardest day.</div>
+      </div>
+      <div class="spoke-card">
+        <div class="spoke-name">Ethical Finance</div>
+        <div class="spoke-value" style="color:#B5737A;">Transparency</div>
+        <div class="spoke-desc">Money should move in the direction of the people who generate value. Commercial income funds free community provision, and the people whose expertise drives that income receive a direct share of it.</div>
+      </div>
+      <div class="spoke-card">
+        <div class="spoke-name">Legal Integrity</div>
+        <div class="spoke-value" style="color:var(--navy);">Accountability</div>
+        <div class="spoke-desc">NCSUN holds itself to the highest standard of governance it can demonstrate. Not because it is required to, but because the communities it serves have been let down by systems that did not.</div>
+      </div>
+    </div>
+  </div>
+  <p class="italic-note">Asset locked to The Feed CIC &middot; Company No. 16798972 &middot; Registered October 2025</p>
+</section>
+
+<section class="section" id="reveal">
+  <div class="section-label">The reveal</div>
+  <h2>Six stations. Six lives. <em>One person.</em></h2>
+  <p class="lead">On 11 March 2026, ten people gathered at Norwich Unity Hub for NCSUN's first Professional Share-Exchange &mdash; eight external professionals plus two members of the NCSUN team. The event used six stations as an activity to showcase the same methodology used at NCSUN's community events, each station presenting an anonymised first-person case study of someone navigating a different part of the system.</p>
+  <p>The case studies covered housing and community connection, the family courts, learning and employment, financial hardship, technology access, and the gap between services. Participants moved between them, left notes, had conversations. The accounts were detailed, specific, and real. Nobody in the room knew they were connected.</p>
+  <p>At the close of the day, Charli disclosed that all six accounts were chapters of her own life. The letters at each station spell CHARLI. Each account maps to the spoke it produced. The organisation was not designed in a boardroom. It was built backwards from lived experience &mdash; which is exactly what it says on the tin.</p>
+  <div class="charli-grid">
+    <div class="charli-spoke"><div class="charli-letter">C</div><div class="charli-name">Community Anchor</div><div class="charli-theme">Station 1. Housing, isolation, the front door nobody else was holding open.</div></div>
+    <div class="charli-spoke"><div class="charli-letter">H</div><div class="charli-name">Legal Integrity</div><div class="charli-theme">Station 2. The family courts. A system not built for the people who need it most.</div></div>
+    <div class="charli-spoke"><div class="charli-letter">A</div><div class="charli-name">LDC Centre</div><div class="charli-theme">Station 3. Learning, development, and the route nobody signposted.</div></div>
+    <div class="charli-spoke"><div class="charli-letter">R</div><div class="charli-name">Ethical Finance</div><div class="charli-theme">Station 4. The real cost of building community infrastructure on a maintenance loan.</div></div>
+    <div class="charli-spoke"><div class="charli-letter">L</div><div class="charli-name">Ethical Technology</div><div class="charli-theme">Station 5. The gap between the person and the tool that could help them.</div></div>
+    <div class="charli-spoke"><div class="charli-letter">I</div><div class="charli-name">GINE</div><div class="charli-theme">Station 6. The intelligence engine built to map what everything else misses.</div></div>
+  </div>
+  <div class="callout mustard">
+    <h3>Why this matters for the work</h3>
+    <p style="font-size:0.95rem;line-height:1.75;">The six accounts are not case studies chosen to illustrate a model. They are the origin of the model. Every spoke exists because of what happened in one of those accounts. That is what Lived Experience as Core Expertise actually means &mdash; not consultation, not representation, but authorship.</p>
+  </div>
+  <p>The full text of all six accounts is available in the digital bundle linked below. Read them. They are the most direct explanation of why this organisation exists and what it is trying to do.</p>
+</section>
+
+<section class="section" id="data">
+  <div class="section-label">The proof of concept</div>
+  <h2>Twenty months. <em>These are the numbers.</em></h2>
+  <p class="lead">No grant funding for operations. No paid staff. Everything built on voluntary commitment, lived experience methodology, and the stubborn belief that this was worth doing before anyone else believed it too.</p>
+  <div class="stats">
+    <div class="stat"><span class="stat-number">1,673</span><span class="stat-label">People reached</span></div>
+    <div class="stat"><span class="stat-number">1,225</span><span class="stat-label">ECC visitors</span></div>
+    <div class="stat"><span class="stat-number">423</span><span class="stat-label">GINE entries</span></div>
+    <div class="stat"><span class="stat-number">76</span><span class="stat-label">NLEH members</span></div>
+    <div class="stat"><span class="stat-number">8</span><span class="stat-label">Districts mapped</span></div>
+    <div class="stat"><span class="stat-number">&pound;0</span><span class="stat-label">Paid staff</span></div>
+  </div>
+  <p>In February 2026, NCSUN ran its first Community Collective &mdash; advertised on Facebook with one week's notice, posted in five community groups. Forty people turned up. Twenty-eight digital responses came back on the day. Forty-three sticky notes covered the board by the time it ended.</p>
+  <p>In March 2026, the first Professional Share-Exchange brought eight organisations into the room. Within days, provisional expressions of interest had already come in for the May event.</p>
+  <div class="callout sage">
+    <h3>The financial pilot &mdash; what the numbers actually show</h3>
+    <p style="font-size:0.95rem;line-height:1.75;margin-bottom:0.75rem;">Before NCSUN was formally registered, Charli ran a voluntary financial roadmap pilot with community members who identified money as a pressure point. She sat with them individually and in groups, working out income, outgoings, and a clear personal roadmap to becoming debt free and one year ahead on all bills.</p>
+    <p style="font-size:0.95rem;line-height:1.75;margin-bottom:0.75rem;">Over 200 people took part. More than 200 are still actively engaged with their plan. 125 of them are currently <strong>ahead</strong> of their roadmap. That is not a coaching success rate. That is what happens when you remove the cognitive and psychological load from financial planning and design the process around the person rather than the system.</p>
+  </div>
+  <div class="callout terra">
+    <h3>The consultancy pilot &mdash; independently valued</h3>
+    <p style="font-size:0.95rem;line-height:1.75;">Before registration, NCSUN completed its first lived experience consultancy as a community group &mdash; six consultants, six weeks, eight actionable recommendations for a local food hall, four of which are still in active use. Independently valued at <strong>&pound;6,000</strong>. Delivered for nothing. Because the people doing it believed in the work.</p>
+    <p style="font-size:0.95rem;line-height:1.75;margin-top:0.75rem;">This kind of work is not only relevant for large-scale intelligence reporting. It is available now &mdash; to individual services, organisations, or networks of them &mdash; for sustaining real and lasting change. Get in touch to commission a mystery shopper style report, a deep-dive accessibility review, or a bespoke piece of lived experience consultancy tailored to what your organisation actually needs to know.</p>
+  </div>
+  <p class="italic-note">Both events combined feed into a forensic intelligence report currently in preparation &mdash; the primary deliverable for city leaders and the evidence base for the future Norwich Poverty Truth Commission.</p>
+</section>
+
+<section class="section" id="tools">
+  <div class="section-label">Built from lived experience</div>
+  <h2>The live tools &mdash; <em>and why they exist.</em></h2>
+  <p class="lead">Every tool below was built by Charli, with AI assistance, from the intelligence gathered through community interaction. They are all in active testing &mdash; the methodology is sound but not everything is fully connected up yet, and they will keep improving. They are free to use, open to co-creation, and no login is required.</p>
+  <div class="tools-list">
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">GINE Master Log V2</div>
+        <p class="tool-why">GINE stands for Growth, Intelligence and Navigation Engine. This is the live database of 423 rows of community intelligence gathered across eight districts across Norwich and its surrounding areas &mdash; Mancroft, Wensum, Mile Cross, Lakenham, Thorpe Hamlet, Larkman, Catton Grove, and Sewell. It maps who is in the system, what they need, and where the gaps are. It is the backbone of everything NCSUN produces.</p>
+      </div>
+      <a class="tool-link" href="https://ncsun-cic.netlify.app/gine_master_log_v2.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">NLEH Network &mdash; Lived Experience Register</div>
+        <p class="tool-why">The Norwich Lived Experience Hub is a register of 76 consented, anonymised lived experience experts &mdash; people who have navigated the system and agreed to contribute their knowledge to making it better. Every member has given informed consent. No personally identifying information is held publicly. NCSUN currently has six ongoing panels meeting on an ad hoc basis. If learning from the lived experience of people trying to navigate your systems is of interest to you, get in touch &mdash; we would welcome that conversation.</p>
+      </div>
+      <a class="tool-link sage" href="https://ncsun-cic.netlify.app/nleh_database_v1.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">Financial Resilience Log V2</div>
+        <p class="tool-why">Built to track the outcomes of the NIOP financial pilot &mdash; Nobody Is Out Of Pocket. This tool holds the journey data from the roadmap work: where people started, where they are now, and whether they are ahead of or behind their plan. The methodology can be replicated for a plan covering any personal or organisational pressure point &mdash; not just finances. Get in touch to discuss co-creating your own plan, or plans for your staff. This could cover business strategy, community perception of your organisation, accessibility for a specific context, or anything else that would benefit from structured, honest mapping.</p>
+      </div>
+      <a class="tool-link mustard" href="https://ncsun-cic.netlify.app/gine_financial_log_v2.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">Prevention Engine</div>
+        <p class="tool-why">A PII-stripped intelligence capture tool built for frontline use. Designed so that community workers and volunteers can log what they are seeing &mdash; without ever recording personally identifying information &mdash; in a way that feeds directly into the GINE intelligence picture. This tool will always be free for anyone to use. The digital tools suite has been built alongside a Tech Educators course, which focuses on practical, ethical use of digital tools in community and organisational settings &mdash; a grounding that shapes everything about how these tools are designed and what they are for.</p>
+      </div>
+      <a class="tool-link" href="https://ncsun-cic.netlify.app/preventionengine.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">GINE Services Database</div>
+        <p class="tool-why">The live, crowd-built database of services, organisations and community groups across Norwich and Norfolk. Built from publicly available information, cross-referenced across multiple sources, and expanded in real time at every NCSUN event. It exists because the community directory is not good enough, and somebody has to build the replacement.</p>
+      </div>
+      <a class="tool-link terra" href="https://ncsun-cic.netlify.app/NCSUN_Station6_GINEDatabase.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">Canopy Companion</div>
+        <p class="tool-why">An AI-powered companion tool designed specifically around cognitive load, crisis state, and the reality of what it is like to need help and not be able to navigate the systems that are supposed to provide it. Canopy does not give lists of links. It listens, responds, and connects. Built because the gap between the person in crisis and the tool that could help them is almost always a design failure, not a resource failure.</p>
+      </div>
+      <a class="tool-link sage" href="https://ncsun-cic.netlify.app/canopy.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+    <div class="tool-item">
+      <div>
+        <div class="tool-name">Digital Bundle &mdash; March 11th</div>
+        <p class="tool-why">The full post-event companion from 11 March 2026 &mdash; including all six station accounts in full, the complete programme, co-creation opportunities, and the feedback form. Everything from the day in one place.</p>
+      </div>
+      <a class="tool-link" href="https://ncsun-cic.netlify.app/NCSUN_DigitalBundle_March11_v3.html" target="_blank" rel="noopener">Open</a>
+    </div>
+
+  </div>
+  <p style="font-size:0.88rem;color:var(--sage);margin-top:1.5rem;">All tools are accessible from the main index at <a href="https://ncsun-cic.netlify.app" target="_blank" style="color:var(--terra);font-weight:700;">ncsun-cic.netlify.app</a></p>
+</section>
+
+<section class="section" id="links">
+  <div class="section-label">All links in one place</div>
+  <h2>Everything you need, <em>here.</em></h2>
+  <div class="links-block">
+    <div class="link-item"><a href="https://www.ncsun.org" target="_blank" rel="noopener">www.ncsun.org</a><span>NCSUN main website</span></div>
+    <div class="link-item"><a href="https://williamr406.sg-host.com/" target="_blank" rel="noopener">Website preview</a><span>New site preview &mdash; Will Richardson</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app" target="_blank" rel="noopener">ncsun-cic.netlify.app</a><span>Full digital tools suite</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/NCSUN_DigitalBundle_March11_v3.html" target="_blank" rel="noopener">Digital Bundle</a><span>March 11th full companion</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/gine_master_log_v2.html" target="_blank" rel="noopener">GINE Master Log V2</a><span>423-row intelligence database</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/nleh_database_v1.html" target="_blank" rel="noopener">NLEH Network</a><span>76 lived experience experts</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/gine_financial_log_v2.html" target="_blank" rel="noopener">Financial Resilience Log</a><span>NIOP pilot outcomes</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/preventionengine.html" target="_blank" rel="noopener">Prevention Engine</a><span>Frontline intelligence capture</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/NCSUN_Station6_GINEDatabase.html" target="_blank" rel="noopener">Services Database</a><span>GINE services &amp; organisations</span></div>
+    <div class="link-item"><a href="https://ncsun-cic.netlify.app/canopy.html" target="_blank" rel="noopener">Canopy Companion</a><span>AI companion tool</span></div>
+    <div class="link-item"><a href="https://forms.gle/ENxepBgBE9jtbjjt8" target="_blank" rel="noopener">Feedback form</a><span>Five minutes. Genuinely useful.</span></div>
+    <div class="link-item"><a href="mailto:charli@ncsun.org">charli@ncsun.org</a><span>Direct to Charli</span></div>
+    <div class="link-item"><a href="mailto:connection@ncsun.org">connection@ncsun.org</a><span>General enquiries</span></div>
+  </div>
+</section>
+
+<section class="section" id="next">
+  <div class="section-label">2026 programme</div>
+  <h2>What today was <em>the beginning of.</em></h2>
+  <p class="lead">NCSUN runs a year-round programme alternating between community-facing Collective events and professional Share-Exchange events. Every event falls on the 11th. Everything gathered feeds forward.</p>
+  <div class="dates-list">
+    <div class="date-row"><div class="date-tag">11 Apr</div><div class="date-label"><strong>Community Collective</strong> &mdash; Norwich City ABC. Open to all. Community-led.</div></div>
+    <div class="date-row"><div class="date-tag">11 May</div><div class="date-label"><strong>Professional Share-Exchange</strong> &mdash; Save the date. Venue to be confirmed. Provisional interest already received.</div></div>
+    <div class="date-row"><div class="date-tag">11 Jun</div><div class="date-label">Community Collective</div></div>
+    <div class="date-row"><div class="date-tag">11 Jul</div><div class="date-label">Professional Share-Exchange</div></div>
+    <div class="date-row"><div class="date-tag">11 Aug</div><div class="date-label">Community Collective</div></div>
+    <div class="date-row"><div class="date-tag">11 Sep</div><div class="date-label">Professional Share-Exchange</div></div>
+    <div class="date-row"><div class="date-tag">11 Oct</div><div class="date-label">Community Collective</div></div>
+    <div class="date-row"><div class="date-tag">11 Nov</div><div class="date-label">Professional Share-Exchange</div></div>
+    <div class="date-row"><div class="date-tag">11 Dec</div><div class="date-label">Community Collective</div></div>
+    <div class="date-row"><div class="date-tag">Jan 2027</div><div class="date-label"><strong>Quarterly Round Table</strong> &mdash; the first formal step toward what Norwich could become. City leaders, MPs, NHS, voluntary sector. The full year's evidence on the table. Alice Macdonald MP (Norwich North) has expressed interest in being part of this.</div></div>
+  </div>
+  <div class="callout mustard">
+    <h3>The destination: a Poverty Truth Norwich Commission</h3>
+    <p style="font-size:0.95rem;line-height:1.75;">The January 2027 Round Table is the first official step toward something larger &mdash; the possibility of a formal Poverty Truth Commission for Norwich. This is not a confirmed destination. It is a proposal being built from both directions, with the evidence to support it being gathered right now. If you want to be part of building that evidence, the conversation starts today.</p>
+  </div>
+  <p>From June 2026 onwards, NCSUN moves to a fair pay rate of &pound;15 per hour for all roles. Every person who has contributed their time and expertise to this network unpaid &mdash; across volunteering, panels, community work, and operations &mdash; will be the first to benefit from what it earns. That is what Nobody Is Out Of Pocket means in practice.</p>
+</section>
+
+<section class="section" id="contact">
+  <div class="section-label">Next steps</div>
+  <h2>If this has landed, <em>let's talk.</em></h2>
+  <p class="lead">We are not asking for charity. We are asking whether what you have read here is something your organisation wants to be part of building.</p>
+  <p>There are five ways that could work &mdash; though we are always open to something we have not thought of yet. Volunteering and skills exchange, space and reciprocal resource agreements, formal partnership with a presence in NCSUN's community magazines, a lived experience consultancy commission, or something else entirely that you think would be a good fit. None of them have a fixed template. If you have an idea, bring it.</p>
+  <p>If you are reading this because someone thought you should, and you think they were right &mdash; reach out. If you are reading this because you were in the room on 11 March and something from that day has stayed with you &mdash; reach out. If you want to come to the April community event to see the other side of what this looks like &mdash; come.</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="mailto:charli@ncsun.org?subject=Following up on NCSUN">Email Charli directly</a>
+    <a class="btn btn-secondary" href="https://www.ncsun.org" target="_blank" rel="noopener">Visit ncsun.org</a>
+    <a class="btn btn-mustard" href="https://forms.gle/ENxepBgBE9jtbjjt8" target="_blank" rel="noopener">Complete the feedback form</a>
+  </div>
+</section>
+
+<footer>
+  <p><strong>NCSUN CIC</strong> &mdash; Norwich Community Support Umbrella Network</p>
+  <p>Company No. 16798972 &middot; Asset locked to The Feed CIC &middot; Registered October 2025</p>
+  <div class="footer-rule"></div>
+  <p><a href="https://www.ncsun.org">www.ncsun.org</a> &middot; <a href="mailto:charli@ncsun.org">charli@ncsun.org</a> &middot; <a href="mailto:connection@ncsun.org">connection@ncsun.org</a></p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;color:rgba(255,255,255,0.3);">Lived Experience as Core Expertise &middot; PAS 6463:2022 / DMCPL</p>
+</footer>
+
+</body>
+</html>
